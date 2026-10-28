@@ -1,0 +1,39 @@
+{
+  "name": "ngg-platform",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "engines": {
+    "node": ">=20.19"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc -b",
+    "test": "vitest run",
+    "size": "node scripts/bundle-size.mjs",
+    "db:test": "bash supabase/tests/run.sh",
+    "set-host-pin": "tsx scripts/set-host-pin.ts",
+    "seed:40": "tsx scripts/seed-40.ts",
+    "load:60": "tsx scripts/load-60.ts"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "2.117.3",
+    "qrcode-generator": "2.0.4",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "react-router": "7.18.4"
+  },
+  "devDependencies": {
+    "@types/node": "22.20.5",
+    "@types/react": "19.2.7",
+    "@types/react-dom": "19.2.3",
+    "@vitejs/plugin-react": "5.1.4",
+    "bcryptjs": "3.0.3",
+    "supabase": "2.120.0",
+    "tsx": "4.23.14",
+    "typescript": "5.9.3",
+    "vite": "7.3.7"
+  }
+}
