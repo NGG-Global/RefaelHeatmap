@@ -1,0 +1,64 @@
+/* Home: navy message page with a code field and a host entry. */
+
+.home-form {
+  display: grid;
+  gap: var(--space-3);
+  margin-top: var(--space-7);
+}
+
+.home-label {
+  font-weight: var(--fw-bold);
+  font-size: 18px;
+  line-height: 1.2;
+}
+
+.home-row {
+  display: flex;
+  gap: var(--space-3);
+}
+
+/* White stadium on navy: contrast from the ground, no border. */
+.home-input {
+  flex: 1 1 0;
+  width: 0;
+  min-width: 0;
+  min-height: 56px;
+  padding: 0 var(--space-5);
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: var(--white);
+  color: var(--ink);
+  font-weight: var(--fw-extrabold);
+  font-size: 24px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.home-input:focus-visible {
+  outline: 3px solid var(--blue);
+  outline-offset: 2px;
+}
+
+.home-go {
+  min-height: 56px;
+  padding: 0 var(--space-6);
+  font-size: 18px;
+}
+
+.home-error {
+  min-height: 24px;
+  font-weight: var(--fw-bold);
+  font-size: 16px;
+  line-height: var(--lh-text);
+}
+
+.home-host {
+  margin-top: var(--space-5);
+  justify-self: start;
+}
+
+/* minmax(0, 1fr): let the column shrink below the text field's intrinsic width. */
+.home {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+}

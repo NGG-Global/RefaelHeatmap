@@ -6,6 +6,8 @@ One web app and one Supabase project for NGG's live workshop tools.
 |---|---|---|
 | Live Heatmap (`heatmap`) | `/v/:shortCode` (participants), `/heatmap/display/:eventId` (projector), `/heatmap/host` (host console) | first module |
 
+The bare address (`/`) and any unknown path open the home page: a voting-code field for participants and a host sign-in button.
+
 - Conventions for every contributor and coding session: [`CLAUDE.md`](CLAUDE.md)
 - Build plan and decisions: [`PLAN.md`](PLAN.md)
 - Design system application: [`docs/design.md`](docs/design.md)

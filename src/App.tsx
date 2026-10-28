@@ -7,6 +7,7 @@ import { SimplePage } from "./platform/SimplePage";
 const ParticipantPage = lazy(() => import("./modules/heatmap/participant/ParticipantPage"));
 const DisplayPage = lazy(() => import("./modules/heatmap/display/DisplayPage"));
 const HostPage = lazy(() => import("./modules/heatmap/host/HostPage"));
+const HomePage = lazy(() => import("./platform/HomePage"));
 
 export default function App() {
   if (!isConfigured) {
@@ -19,7 +20,7 @@ export default function App() {
           <Route path="/v/:shortCode" element={<ParticipantPage />} />
           <Route path="/heatmap/display/:eventId" element={<DisplayPage />} />
           <Route path="/heatmap/host" element={<HostPage />} />
-          <Route path="*" element={<SimplePage title="NGG Platform" />} />
+          <Route path="*" element={<HomePage />} />
         </Routes>
       </Suspense>
     </BrowserRouter>
