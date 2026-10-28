@@ -76,11 +76,12 @@ export const PARTICIPANT_UI = {
   resubmit: "עדכון ההצבעה",
   sending: "שולח…",
   answerBoth: "בחרו ציון בשתי השאלות",
+  slidePrompt: "גררו את המד או הקישו על מספר",
+  sliderEmpty: "לא נבחר ציון",
   sendFailed: "השליחה לא הצליחה. בדקו את החיבור ונסו שוב.",
   offline: "אין חיבור לרשת. נסו שוב בעוד רגע.",
   notFoundTitle: "האירוע לא נמצא",
   notFoundBody: "בדקו את הקישור או סרקו שוב את הקוד.",
-  scoreLabel: (score: number) => `ציון ${score}`,
 } as const;
 
 export const DISPLAY_UI = {
@@ -95,6 +96,7 @@ export const DISPLAY_UI = {
   votingClosedBadge: "ההצבעה סגורה",
   qrAlt: "קוד QR להצבעה",
   hostControls: "שליטת מנחה",
+  backToConsole: "חזרה לניהול",
 } as const;
 
 export const HOST_UI = {

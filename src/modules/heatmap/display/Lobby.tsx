@@ -3,8 +3,8 @@ import { publicBaseUrl } from "../../../platform/env";
 import { Comet } from "../../../platform/Motif";
 import { QrCode } from "../../../platform/QrCode";
 import { Stage } from "../../../platform/Stage";
-import nggMark from "../../../platform/ngg-mark.png";
 import { DISPLAY_UI, VOTERS_SUFFIX } from "../content";
+import { StageFooter } from "./StageFooter";
 
 const QR_SIZE = 760;
 const LINK_MAX_FONT = 46;
@@ -45,7 +45,7 @@ export function Lobby({ name, shortCode, voters, votingOpen }: Props) {
         </div>
         {!votingOpen ? <p className="stage-badge lobby-badge">{DISPLAY_UI.votingClosedBadge}</p> : null}
 
-        <img className="stage-logo" src={nggMark} alt="NGG" />
+        <StageFooter ground="dark" />
       </div>
     </Stage>
   );

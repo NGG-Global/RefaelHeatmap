@@ -19,15 +19,16 @@ colours (the system allows no transparency on content).
 | Type | Assistant only, weights 400/600/700/800, self-hosted woff2 (Hebrew + Latin subsets), preloaded. Display type on 90 % leading. |
 | Geometry | Radii are 0, 50 % or a stadium. Nothing is lightly rounded. No borders, no shadows, no blur. |
 | Motif | Trail + dot at the template's exact sizes and rotations, only on navy grounds, clipped by the edge on small screens rather than scaled. |
-| Projector | The display is laid out on the system's own 1920 × 1080 canvas and scaled to the window. Footer lockup: NGG mark at x 26, y 995, 72 px tall. Client marks are never used. |
+| Projector | The display is laid out on the system's own 1920 × 1080 canvas and scaled to the window. Footer lockup: NGG mark at x 26, y 995, 72 px tall, then the client wordmark (white on navy, colour on white), set in `src/brand/`. |
 
 ## Extensions for interactive screens
 
 | Need | Rule | Derived from |
 |---|---|---|
+| Gauge track | Five stadium segments (one per anchor band) in `--blue-wash`; the active band's segment in solid `--blue` | Stadium geometry; the system's empty image well (12 % blue wash), made solid |
+| Gauge handle | 48 px navy dot with the white score (20:1); no handle until first touch | The motif dot |
+| Band readout | `--card` panel above the gauge: range in muted text, band text in ink ExtraBold | Card ground (brief) |
 | Idle control | `--blue-wash #E0E9FC` fill, ink label | The system's empty image well (12 % blue wash), made solid |
-| Selected control | Solid `--blue`, white label (7.0:1) | Blue as the brand shape colour |
-| Highlighted band | Stadium row in `--blue-wash`; idle buttons in it turn white | Stadium geometry; wash |
 | Primary action | Blue stadium button, ExtraBold label | Stadium geometry |
 | Disabled action | Wash fill, `--text-muted` label | Wash |
 | Confirmation | Navy stadium, white ExtraBold text | Navy ground with white type |
@@ -44,10 +45,11 @@ All text/ground pairs meet WCAG AA: lowest is white on a bubble (5.3:1);
 ## Screens
 
 - **Participant (phone).** Navy hero with the opening line; two questions, each a
-  numbered kicker (axis label), the question as a title, and five stadium rows:
-  two 56 px score circles + the band text. Sticky submit bar on `--card`. Closed /
-  not-found states are full navy message pages. Layout stays put when a score is
-  chosen (no re-wrapping, no motion).
+  numbered kicker (axis label), the question as a title, the band readout and a
+  1–10 gauge (tap or drag; runs 1 → 10 left to right like the projector's X axis;
+  starts empty). Sticky submit bar on `--card`. Closed / not-found states are full
+  navy message pages. The readout has a fixed minimum height, so the layout stays
+  put while dragging.
 - **Display (projector).** Lobby on navy: QR (760 px, quiet zone included),
   short link under it, event name (88 px) and live counter (133 px) on the right.
   Results on white: matrix centred-left (`dir="ltr"`), event name top-right,

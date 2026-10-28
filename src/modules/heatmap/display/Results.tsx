@@ -1,8 +1,8 @@
 /** After the reveal: the bubble matrix, event name and voter count. Updates live. */
 import { Stage } from "../../../platform/Stage";
-import nggMark from "../../../platform/ngg-mark.png";
 import type { Cell } from "../api";
 import { DISPLAY_UI, VOTERS_SUFFIX } from "../content";
+import { StageFooter } from "./StageFooter";
 import { BubbleMatrix } from "./BubbleMatrix";
 
 interface Props {
@@ -27,7 +27,7 @@ export function Results({ name, voters, votingOpen, cells, mean }: Props) {
         </div>
         {!votingOpen ? <p className="stage-badge results-badge">{DISPLAY_UI.votingClosedBadge}</p> : null}
 
-        <img className="stage-logo" src={nggMark} alt="NGG" />
+        <StageFooter ground="light" />
       </div>
     </Stage>
   );

@@ -26,12 +26,26 @@ body.cursor-hidden * {
   pointer-events: none;
 }
 
-/* Design-system footer lockup: NGG mark at x 26, y 995, 72 px tall. */
-.stage-logo {
+/* Design-system footer lockup: NGG mark at x 26, then the co-brand wordmark
+   from x 96, both 72 px tall at y 995. Runs left to right. */
+.stage-footer {
   position: absolute;
   left: 26px;
   top: 995px;
   height: 72px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.stage-footer-ngg {
+  width: 55px;
+  height: 72px;
+  object-fit: contain;
+}
+
+.stage-footer-cobrand {
+  height: 60px;
   width: auto;
 }
 
@@ -283,6 +297,17 @@ body.cursor-hidden * {
   border-radius: var(--radius-pill);
   background: var(--navy);
   z-index: 10;
+}
+
+/* Navigation, set apart from the state toggles: white text on the navy bar. */
+.hostbar-back {
+  margin-inline-end: var(--space-3);
+  background: transparent;
+  color: var(--white);
+}
+
+.hostbar-back:hover {
+  background: var(--ink);
 }
 
 .hostbar.is-hidden {

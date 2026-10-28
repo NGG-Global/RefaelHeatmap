@@ -4,6 +4,7 @@
  * movement, so the projected image stays clean.
  */
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router";
 import { clearHostPin } from "../../../platform/hostSession";
 import { hostSetState } from "../api";
 import { DISPLAY_UI } from "../content";
@@ -21,6 +22,7 @@ interface Props {
 }
 
 export function HostBar({ pin, eventId, revealed, votingOpen, showMean, onChanged, onAuthLost }: Props) {
+  const navigate = useNavigate();
   const [visible, setVisible] = useState(true);
   const [busy, setBusy] = useState(false);
 
@@ -63,8 +65,33 @@ export function HostBar({ pin, eventId, revealed, votingOpen, showMean, onChange
     }
   }
 
+  /**
+   * Back to the host console. A display opened from the console closes itself,
+   * which brings the console window back without projecting the event list;
+   * otherwise (or if the browser refuses to close it) navigate to the console.
+   */
+  function backToConsole() {
+    const opener = window.opener as Window | null;
+    let openedFromConsole = false;
+    try {
+      openedFromConsole = !!opener && !opener.closed && opener.location.pathname === "/heatmap/host";
+    } catch {
+      openedFromConsole = false; // cross-origin opener
+    }
+    if (openedFromConsole) {
+      opener!.focus();
+      window.close();
+    }
+    window.setTimeout(() => {
+      if (!window.closed) navigate("/heatmap/host");
+    }, 300);
+  }
+
   return (
     <div className={visible ? "hostbar" : "hostbar is-hidden"} role="toolbar" aria-label={DISPLAY_UI.hostControls}>
+      <button type="button" className="btn hostbar-back" onClick={backToConsole}>
+        {DISPLAY_UI.backToConsole}
+      </button>
       <button type="button" className="btn btn-primary" disabled={busy} onClick={() => apply({ revealed: !revealed })}>
         {revealed ? DISPLAY_UI.hide : DISPLAY_UI.reveal}
       </button>

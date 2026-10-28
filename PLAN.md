@@ -107,6 +107,13 @@ and kept each one easy to change.
     in `content.ts` under "UI microcopy" for review.
 12. **QR target.** `VITE_PUBLIC_BASE_URL` (optional) fixes the domain printed in
     the QR and short link; otherwise the current origin is used.
+13. **Gauge instead of ten buttons** (owner's decision, 28 Oct, replacing the
+    brief's "no slider"). To avoid the default-position bias a slider brings, the
+    gauge starts empty and a score counts only after a tap or drag; touch input
+    tells taps, sideways drags and page scrolls apart, so scrolling never changes
+    an answer.
+14. **Co-brand footer** (owner's decision, 28 Oct): the client wordmark beside the
+    NGG mark on the projector. Kept in `src/brand/` only.
 
 ## Open questions for Dor
 
