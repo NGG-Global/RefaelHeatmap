@@ -11,6 +11,7 @@ One web app and one Supabase project for NGG's live workshop tools.
 - Design system application: [`docs/design.md`](docs/design.md)
 - Acceptance checklist: [`docs/acceptance.md`](docs/acceptance.md)
 - Bundle size report: [`docs/bundle-size.md`](docs/bundle-size.md)
+- Owner setup steps (Supabase, PIN, Vercel): [`docs/setup.md`](docs/setup.md)
 
 ## Local development
 
