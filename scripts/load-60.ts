@@ -62,7 +62,17 @@ async function main() {
   });
   const supabase = createClient(config.url, config.key, { auth: { persistSession: false, autoRefreshToken: false } });
   await new Promise<void>((resolve, reject) => {
-    const timer = setTimeout(() => reject(new Error("Realtime subscribe timed out")), 15_000);
+    const timer = setTimeout(
+      () =>
+        reject(
+          new Error(
+            "Realtime subscribe timed out. Check that Realtime is enabled and that " +
+              "'Allow public access to channels' is on (Project Settings → Realtime). " +
+              "Right after a local `supabase db reset`, wait ~20 s for Realtime to restart.",
+          ),
+        ),
+      15_000,
+    );
     supabase
       .channel(`heatmap:${eventId}`, { config: { private: false } })
       .on("broadcast", { event: "changed" }, () => {
