@@ -1,0 +1,49 @@
+name: "Supabase: set host PIN"
+
+# Manual only. Reads the PIN from the repository secret HOST_PIN, hashes it on
+# the runner (bcrypt) and sends only the hash. The PIN never appears in the
+# repository or in the log (GitHub masks secrets).
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: supabase-production
+  cancel-in-progress: false
+
+jobs:
+  set-pin:
+    runs-on: ubuntu-latest
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+      SUPABASE_PROJECT_ID: ${{ secrets.SUPABASE_PROJECT_ID }}
+      HOST_PIN: ${{ secrets.HOST_PIN }}
+    steps:
+      - name: Check repository secrets
+        run: |
+          missing=0
+          for name in SUPABASE_ACCESS_TOKEN SUPABASE_DB_PASSWORD SUPABASE_PROJECT_ID HOST_PIN; do
+            if [ -z "${!name}" ]; then
+              echo "::error::Repository secret $name is not set (Settings → Secrets and variables → Actions)."
+              missing=1
+            fi
+          done
+          exit $missing
+
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Link the project
+        run: npx supabase link --project-ref "$SUPABASE_PROJECT_ID"
+
+      - name: Set the PIN (only the hash is sent)
+        run: printf '%s\n' "$HOST_PIN" | npm run -s set-host-pin -- --linked

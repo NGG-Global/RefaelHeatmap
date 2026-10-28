@@ -85,7 +85,12 @@ this repo follows the rules below.
 - The service-role / secret key never enters the repo or the browser.
 - The host PIN is never stored in the repo. It is set with
   `npm run set-host-pin`, which hashes it locally (bcrypt `$2a$`) and sends only
-  the hash.
+  the hash, or by the manual workflow **Supabase: set host PIN** from the
+  `HOST_PIN` repository secret.
+- Database credentials for CI live only in GitHub repository secrets
+  (`SUPABASE_ACCESS_TOKEN`, `SUPABASE_DB_PASSWORD`, `SUPABASE_PROJECT_ID`).
+  Migrations to the remote project run only through the manual workflow
+  **Supabase: apply migrations**, never automatically on push.
 
 ## Checks before every commit
 

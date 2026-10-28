@@ -1,0 +1,75 @@
+name: "Supabase: apply migrations"
+
+# Manual only (Actions → this workflow → Run workflow).
+# Migration discipline (CLAUDE.md): never on the day of a live session; once a
+# second module is live, never within 48 hours of any module's live session.
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: 'Type "migrate" to apply supabase/migrations to the production project'
+        required: true
+        type: string
+      run_tests:
+        description: "Afterwards, run the pgTAP tests against the project (they roll back)"
+        required: false
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: supabase-production
+  cancel-in-progress: false
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+      SUPABASE_PROJECT_ID: ${{ secrets.SUPABASE_PROJECT_ID }}
+    steps:
+      - name: Confirm
+        env:
+          CONFIRM: ${{ inputs.confirm }}
+        run: |
+          if [ "$CONFIRM" != "migrate" ]; then
+            echo "::error::Type the word migrate in the confirm box to run this workflow."
+            exit 1
+          fi
+
+      - name: Check repository secrets
+        run: |
+          missing=0
+          for name in SUPABASE_ACCESS_TOKEN SUPABASE_DB_PASSWORD SUPABASE_PROJECT_ID; do
+            if [ -z "${!name}" ]; then
+              echo "::error::Repository secret $name is not set (Settings → Secrets and variables → Actions)."
+              missing=1
+            fi
+          done
+          exit $missing
+
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      # The Supabase CLI version pinned in package.json.
+      - run: npm ci
+
+      - name: Link the project
+        run: npx supabase link --project-ref "$SUPABASE_PROJECT_ID"
+
+      - name: Migrations to apply
+        run: npx supabase db push --dry-run
+
+      - name: Apply migrations
+        run: npx supabase db push --yes
+
+      - name: Database tests (pgTAP, rolled back)
+        if: ${{ inputs.run_tests }}
+        run: npx supabase test db --linked

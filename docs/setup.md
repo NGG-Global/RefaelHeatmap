@@ -16,6 +16,31 @@ In order. Commands run from the repository root on your machine (Node 22+).
 
 ## 2. Database
 
+### Without a local machine (GitHub only)
+
+1. GitHub → the repository → Settings → Secrets and variables → Actions →
+   New repository secret, four times:
+   - `SUPABASE_ACCESS_TOKEN`: a personal access token from
+     supabase.com → Account → Access Tokens
+   - `SUPABASE_DB_PASSWORD`: the database password chosen when the project
+     was created (Project Settings → Database lets you reset it)
+   - `SUPABASE_PROJECT_ID`: the project ref (the part of the project URL before
+     `.supabase.co`)
+   - `HOST_PIN`: the host PIN (at least 6 characters; 8+ with letters and digits
+     recommended)
+2. Actions → **Supabase: apply migrations** → Run workflow → type `migrate` →
+   Run. The log lists the migrations, applies them and runs the 66 database
+   tests (they roll back).
+3. Actions → **Supabase: set host PIN** → Run workflow. The PIN is hashed on the
+   runner and only the hash is stored. To change the PIN later, update the
+   `HOST_PIN` secret and run this workflow again.
+
+If the retention migration fails on `pg_cron`, enable the **pg_cron** extension
+under Database → Extensions in the Supabase dashboard and run the migration
+workflow again.
+
+### With a local machine
+
 ```bash
 npm install
 npx supabase login
@@ -26,6 +51,9 @@ npx supabase test db --linked   # 66 pgTAP tests, all roll back (needs Docker)
 ```
 
 ## 3. Host PIN
+
+GitHub only: the **Supabase: set host PIN** workflow (step 2 above). With a
+local machine:
 
 ```bash
 npm run set-host-pin -- --linked
