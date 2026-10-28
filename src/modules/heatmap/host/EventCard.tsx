@@ -82,6 +82,7 @@ export function EventCard({ pin, event, onChanged, onAuthFailure }: Props) {
           {event.revealed ? HOST_UI.revealed : HOST_UI.hidden}
         </li>
         {event.show_mean ? <li className="h-chip">{HOST_UI.meanOn}</li> : null}
+        {event.show_dots === false ? <li className="h-chip">{HOST_UI.dotsOff}</li> : null}
       </ul>
 
       <p className="h-link">
@@ -110,6 +111,17 @@ export function EventCard({ pin, event, onChanged, onAuthFailure }: Props) {
           <button type="button" className="btn btn-secondary" disabled={busy} onClick={() => setState({ show_mean: !event.show_mean })}>
             {event.show_mean ? HOST_UI.hideMean : HOST_UI.showMean}
           </button>
+          {/* Left out until the show_dots migration is applied. */}
+          {event.show_dots !== undefined ? (
+            <button
+              type="button"
+              className="btn btn-secondary"
+              disabled={busy}
+              onClick={() => setState({ show_dots: !event.show_dots })}
+            >
+              {event.show_dots ? HOST_UI.hideDots : HOST_UI.showDots}
+            </button>
+          ) : null}
         </div>
         <div className="h-actions-group">
           <button type="button" className="btn btn-secondary" disabled={busy} onClick={exportCsv}>

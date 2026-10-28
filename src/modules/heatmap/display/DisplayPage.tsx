@@ -1,10 +1,11 @@
 /**
  * Projector display — /heatmap/display/:eventId (1920 × 1080).
- * Shows the lobby (QR + live count) until the host reveals, then the bubble
- * matrix. What is visible is decided by heatmap_display() in the database.
+ * Shows the lobby (QR + live count) until the host reveals, then the heatmap.
+ * What is visible is decided by heatmap_display() in the database.
+ * ?view=matrix shows the backup bubble matrix (alternative A) instead.
  */
 import { useEffect, useState } from "react";
-import { useParams } from "react-router";
+import { useParams, useSearchParams } from "react-router";
 import { clearHostPin, getHostPin } from "../../../platform/hostSession";
 import { SimplePage } from "../../../platform/SimplePage";
 import { hostListEvents } from "../api";
@@ -12,7 +13,7 @@ import { DISPLAY_UI } from "../content";
 import { useDisplayData } from "../useDisplayData";
 import { HostBar } from "./HostBar";
 import { Lobby } from "./Lobby";
-import { Results } from "./Results";
+import { Results, type ResultsView } from "./Results";
 import "./display.css";
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -42,6 +43,7 @@ function useVerifiedHostPin() {
 function DisplayScreen({ eventId }: { eventId: string }) {
   const { data, connection, refetch } = useDisplayData(eventId);
   const host = useVerifiedHostPin();
+  const view: ResultsView = useSearchParams()[0].get("view") === "matrix" ? "matrix" : "heatmap";
 
   useEffect(() => {
     if (data?.status === "ok") document.title = data.name;
@@ -59,6 +61,8 @@ function DisplayScreen({ eventId }: { eventId: string }) {
           votingOpen={data.voting_open}
           cells={data.cells ?? []}
           mean={data.show_mean ? data.mean : null}
+          showDots={data.show_dots ?? true}
+          view={view}
         />
       ) : (
         <Lobby name={data.name} shortCode={data.short_code} voters={data.voters} votingOpen={data.voting_open} />
@@ -77,6 +81,7 @@ function DisplayScreen({ eventId }: { eventId: string }) {
           revealed={data.revealed}
           votingOpen={data.voting_open}
           showMean={data.show_mean}
+          showDots={data.show_dots}
           onChanged={refetch}
           onAuthLost={host.clear}
         />

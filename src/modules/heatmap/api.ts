@@ -21,6 +21,8 @@ export type DisplayData =
       voting_open: boolean;
       revealed: boolean;
       show_mean: boolean;
+      /** Absent until the show_dots migration is applied; treat as true. */
+      show_dots?: boolean;
       voters: number;
       cells: Cell[] | null;
       mean: { x: number; y: number } | null;
@@ -35,6 +37,8 @@ export interface HostEvent {
   voting_open: boolean;
   revealed: boolean;
   show_mean: boolean;
+  /** Absent until the show_dots migration is applied; treat as true. */
+  show_dots?: boolean;
   voters: number;
 }
 
@@ -70,9 +74,9 @@ export const hostCreateEvent = (pin: string, name: string) =>
 export const hostSetState = (
   pin: string,
   eventId: string,
-  state: { voting_open?: boolean; revealed?: boolean; show_mean?: boolean },
+  state: { voting_open?: boolean; revealed?: boolean; show_mean?: boolean; show_dots?: boolean },
 ) =>
-  rpc<Host<{ voting_open: boolean; revealed: boolean; show_mean: boolean }>>(
+  rpc<Host<{ voting_open: boolean; revealed: boolean; show_mean: boolean; show_dots?: boolean }>>(
     "heatmap_host_set_state",
     {
       p_pin: pin,
@@ -80,6 +84,9 @@ export const hostSetState = (
       ...(state.voting_open !== undefined && { p_voting_open: state.voting_open }),
       ...(state.revealed !== undefined && { p_revealed: state.revealed }),
       ...(state.show_mean !== undefined && { p_show_mean: state.show_mean }),
+      // Sent only when set, so the other toggles keep working on a database
+      // that does not have the show_dots migration yet.
+      ...(state.show_dots !== undefined && { p_show_dots: state.show_dots }),
     },
     { retries: 1 },
   );

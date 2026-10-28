@@ -12,16 +12,18 @@ key; you type the host PIN when prompted (never put it in a file).
 ### 1. Seed of 40 votes — `npm run seed:40 -- --app https://<production-domain>`
 
 - [ ] Prints `ALL CHECKS PASSED`.
-- [ ] Covers: cell counts, voter counter (40), mean (6.05, 6.50), every bubble's
-      position, printed count and diameter (√count, 90 % cap, floor of 5,
-      46 px minimum), no overlap next to the maximum (8 votes at (7,8) beside
-      (8,8) and (7,7)), midlines at 5.5, mean marker, export rows and CSV
-      (BOM, header, Israel time, no device id).
+- [ ] Covers (brief V5): cell counts, voter counter (40), mean (6.05, 6.50);
+      the darkest colour at the largest cluster (8 votes at (7,8) beside (8,8)
+      and (7,7)), single votes in light colours, transparent where nobody
+      answered (both computed and read back from the rendered map); number of
+      dots = counter, one dot per respondent at each score point; dashed
+      quadrant lines at 5.5, four quadrant names, mean ring, legend; hiding the
+      dots; export rows and CSV (BOM, header, Israel time, no device id).
 - [ ] The rendered-display part needs Playwright once:
       `npx playwright install chromium` (without it the script skips that part
       and says so).
-- [ ] Open `test-results/seed-40-display.png` and compare with the expected
-      table the script prints.
+- [ ] Open `test-results/seed-40-display.png` (and `…-no-dots.png`): the dark
+      red concentration sits at (7, 8).
 - [ ] The event is kept for a look on the projector; delete it from the host
       console afterwards (or run with `--cleanup`).
 
@@ -34,13 +36,15 @@ key; you type the host PIN when prompted (never put it in a file).
 
 ### 3–6. Database rules — `npm run db:test` (local) or `npx supabase test db --linked`
 
-- [ ] 66 pgTAP tests pass. They cover:
+- [ ] 74 pgTAP tests pass. They cover:
   - 3: no cells or mean before reveal, including a direct `heatmap_display`
     call as `anon`; hidden again after hide.
   - 4: after close, new votes and vote changes are refused and nothing is
     stored.
   - 5: a new event starts empty; reset removes every vote, hides results and
     reopens voting; delete removes the event.
+  - show/hide dots: on by default, toggled by the host, untouched by the other
+    toggles; `heatmap_host_set_state` has a single signature.
   - 6: every host function fails with a wrong, empty or missing PIN and changes
     nothing; lockout after five wrong PINs; `anon` cannot read any table or call
     internal helpers; `authenticated` cannot call host functions.
@@ -60,16 +64,19 @@ key; you type the host PIN when prompted (never put it in a file).
 One iPhone (Safari) and one Android phone (Chrome).
 
 - [ ] Scan the QR from the projected lobby; the page opens without a login.
-- [ ] Opening line and both questions match section 7; Hebrew is right-aligned.
+- [ ] Opening line and both questions match the slide "שתי שאלות למפת החום"
+      (brief V5, "תוכן מחייב"); Hebrew is right-aligned.
+- [ ] Each question looks like the slide: header bar "ציר X | …" (navy) or
+      "ציר Y | …" (blue), then the five anchor bands.
 - [ ] Both gauges start with the handle on 5 (no number) and animated arrows.
       Tapping a number, tapping the handle (records 5) or dragging sets the
-      score, hides the arrows and shows that band's text above the gauge;
+      score, hides the arrows and highlights that score's band above the gauge;
       "שליחה" stays disabled until both questions are set.
 - [ ] Scrolling the page with a finger that starts on a gauge does not change
       the answer.
 - [ ] Submit shows "תודה, ההצבעה נקלטה"; the projector counter goes up.
 - [ ] Change one answer → "עדכון ההצבעה" → submit again; the counter does not
-      go up, the bubble moves after the reveal.
+      go up, the dot moves after the reveal.
 - [ ] Close voting from the host console; the next submit shows
       "ההצבעה הסתיימה". Reload: the closed message appears instead of the form.
 - [ ] Airplane mode on, submit: a connection message appears and nothing breaks;
@@ -80,22 +87,31 @@ One iPhone (Safari) and one Android phone (Chrome).
 - [ ] Browser full screen (F11) on the projector laptop; the stage fills the
       screen without scrollbars.
 - [ ] QR scans from about 5 m with both phones (also from the side seats).
-- [ ] Event name, short link, counter, tick numbers, quadrant names, bubble
-      counts and "ממוצע" are readable from the back row.
+- [ ] Event name, short link, counter, tick numbers, axis names, quadrant
+      names, legend and "ממוצע" are readable from the back row; the heatmap
+      colours are distinguishable on this projector (yellow → dark red).
 - [ ] Host control bar appears on mouse movement and disappears, with the
       cursor, about 3 s later.
-- [ ] Grid lines and midlines stay visible through the bubbles.
+- [ ] Dashed quadrant lines stay visible through the colour; the dots stand out
+      on dark red.
+- [ ] Reveal: the map fades in. A late vote fades in (colour and dot).
+- [ ] Control bar: "הסתר נקודות" / "הצג נקודות" and "הסתר ממוצע" / "הצג ממוצע"
+      act within a second; "אפס אירוע" asks "לאשר איפוס?" and only the second
+      click resets (counter 0, lobby with QR, voting open).
+- [ ] With 60 votes the map updates without visible delay on the host laptop
+      (if not: `GRID` 140 → 100 in `density.ts`).
 - [ ] Check the short link and QR target: the domain must be the production
       domain and must not contain the client's name.
 
 ### 9. Texts and direction
 
-- [ ] Every text in `src/modules/heatmap/content.ts` section A matches section 7
-      of the brief character by character (opening line, questions, axis labels,
-      ten band texts, four quadrant names, two messages).
+- [ ] Every text in `src/modules/heatmap/content.ts` section A matches "תוכן
+      מחייב" in brief V5 (identical to the slide of 28 Oct) character by
+      character: opening line, two axis names, ten band texts, four quadrant
+      names, two messages, legend.
 - [ ] Section B (UI microcopy) has had a Hebrew read-through.
 - [ ] Hebrew is right-aligned on the participant page, display and host console.
-- [ ] Matrix axes are not mirrored: X 1 → 10 left to right, Y 1 → 10 bottom to
+- [ ] Map axes are not mirrored: X 1 → 10 left to right, Y 1 → 10 bottom to
       top; "מובילים מהחזית" is top right.
 
 ## Before the live session (2 November)

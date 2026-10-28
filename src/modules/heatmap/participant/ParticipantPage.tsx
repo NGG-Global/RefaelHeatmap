@@ -134,8 +134,8 @@ export default function ParticipantPage() {
       </header>
 
       <main className="p-body">
-        <ScoreQuestion index={1} question={QUESTION_X} value={x} onChange={choose(setX)} />
-        <ScoreQuestion index={2} question={QUESTION_Y} value={y} onChange={choose(setY)} />
+        <ScoreQuestion question={QUESTION_X} value={x} onChange={choose(setX)} />
+        <ScoreQuestion question={QUESTION_Y} value={y} onChange={choose(setY)} />
       </main>
 
       <footer className="p-submit">

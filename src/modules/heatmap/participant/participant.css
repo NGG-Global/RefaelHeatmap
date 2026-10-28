@@ -60,73 +60,110 @@
   padding-top: var(--space-7);
 }
 
-.q-kicker {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-weight: var(--fw-bold);
-  font-size: 16px;
-  line-height: 1.2;
-  color: var(--ink);
+/* Header bar, as on the slide: "ציר X | <axis name>", white on navy (X) or
+   blue (Y). The axis colour carries into the band pills below. */
+.q.is-x {
+  --axis: var(--navy);
 }
 
-.q-index {
-  display: inline-flex;
-  flex: none;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  border-radius: var(--radius-round);
-  background: var(--blue);
+.q.is-y {
+  --axis: var(--blue);
+}
+
+.q-head {
+  padding: var(--space-3) var(--space-4);
+  background: var(--axis);
   color: var(--white);
   font-weight: var(--fw-extrabold);
-  font-size: 16px;
-  line-height: 1;
-}
-
-.q-title {
-  margin-top: var(--space-3);
-  font-weight: var(--fw-extrabold);
-  font-size: 22px;
-  line-height: 1.12;
-  color: var(--ink);
-}
-
-/* Readout above the gauge: the anchor-band text for the chosen score. */
-.q-readout {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: var(--space-1);
-  min-height: 84px;
-  margin-top: var(--space-5);
-  padding: var(--space-3) var(--space-4);
-  background: var(--card);
-}
-
-.q-readout-range {
-  font-weight: var(--fw-bold);
-  font-size: 14px;
-  line-height: 1;
-  color: var(--text-muted);
-  direction: ltr;
-  unicode-bidi: isolate;
-  align-self: flex-start;
-}
-
-.q-readout-text {
-  font-weight: var(--fw-extrabold);
   font-size: 19px;
-  line-height: 1.2;
-  color: var(--ink);
+  line-height: 1.15;
 }
 
-.q-readout-prompt {
+.q-head-tag {
+  white-space: nowrap;
+}
+
+.q-head-sep {
+  margin-inline: var(--space-2);
+  opacity: 0.7;
+}
+
+.q-text,
+.q-note {
+  margin-top: var(--space-2);
   font-weight: var(--fw-semibold);
   font-size: 16px;
   line-height: var(--lh-text);
+  color: var(--text);
+}
+
+.q-note {
   color: var(--text-muted);
+}
+
+/* The five anchor bands, as on the slide: range pill + text on the card
+   ground. The chosen score's band turns solid in the axis colour. */
+.q-bands {
+  display: grid;
+  gap: 6px;
+  margin: 6px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.q-band {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 48px;
+  padding: var(--space-2) var(--space-3);
+  background: var(--card);
+  color: var(--text);
+  font-weight: var(--fw-semibold);
+  font-size: 16px;
+  line-height: 1.2;
+}
+
+.q-band-range {
+  flex: none;
+  min-width: 52px;
+  padding: 5px 10px;
+  border-radius: var(--radius-pill);
+  background: var(--axis);
+  color: var(--white);
+  font-weight: var(--fw-extrabold);
+  font-size: 15px;
+  line-height: 1;
+  text-align: center;
+  direction: ltr;
+  unicode-bidi: isolate;
+  font-variant-numeric: tabular-nums;
+}
+
+.q-band.is-active {
+  background: var(--axis);
+  color: var(--white);
+  font-weight: var(--fw-extrabold);
+}
+
+.q-band.is-active .q-band-range {
+  background: var(--white);
+  color: var(--axis);
+}
+
+/* Until the first touch: how to use the gauge. Keeps its height afterwards,
+   so nothing below moves. */
+.q-hint {
+  min-height: 1.25em;
+  margin-top: var(--space-4);
+  font-weight: var(--fw-semibold);
+  font-size: 15px;
+  line-height: var(--lh-text);
+  color: var(--text-muted);
+}
+
+.q-hint.is-done {
+  visibility: hidden;
 }
 
 /* Gauge: 5 band segments, numbers 1–10 under them, navy handle with the score. */
@@ -302,7 +339,7 @@
     font-size: 34px;
   }
 
-  .q-title {
-    font-size: 26px;
+  .q-head {
+    font-size: 22px;
   }
 }

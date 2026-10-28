@@ -35,12 +35,13 @@ src/platform/
 src/modules/heatmap/
   content.ts                     every text of the module
   api.ts                         typed RPC wrappers
-  scale.ts                       bubble geometry constants + √count sizing
+  density.ts                     heatmap maths: Gaussian density, YlOrRd ramp, dot offsets
+  scale.ts                       backup bubble matrix (?view=matrix): geometry + √count sizing
   useDisplayData.ts              realtime signal → coalesced refetch, 5 s poll
   participant/ display/ host/    screens and their components
 supabase/
   config.toml                    project_id = "ngg-platform"
-  migrations/                    platform, heatmap, retention
+  migrations/                    platform, heatmap, retention, show_dots
   tests/                         pgTAP tests (acceptance 3–6)
 scripts/
   set-host-pin.ts                hashes the PIN locally and stores only the hash
@@ -61,6 +62,10 @@ docs/
    and triggers; the nine `public.heatmap_*` functions with grants.
 3. `…_heatmap_retention.sql` — `pg_cron`, `heatmap.purge_expired_events()`,
    daily job `heatmap-retention` at 03:17 UTC.
+4. `…_heatmap_show_dots.sql` (brief V5) — `event_state.show_dots` (default
+   true); `heatmap_display` and `heatmap_host_list_events` return it;
+   `heatmap_host_set_state` gains an optional `p_show_dots` (old signature
+   dropped, grants restated).
 
 ## Decisions taken (please confirm or overrule)
 
@@ -83,7 +88,12 @@ and kept each one easy to change.
    (33.5 M combinations), 6 after repeated collisions. Input is upper-cased, so a
    typed lower-case `l` is read as `L`.
 5. **Reset** follows the brief literally: deletes votes, `revealed = false`,
-   `voting_open = true`; `show_mean` keeps its value.
+   `voting_open = true`; `show_mean` and `show_dots` keep their values. It is on
+   the host console (modal confirmation, with a reminder to export CSV first)
+   and, since V5, on the projector's control bar (asks "לאשר איפוס?" in place
+   and gives up after 5 s). For a different group on the next day: reset keeps
+   the same QR and link; "אירוע חדש" gives a new QR and keeps the first group's
+   data for export.
 6. **Mean** is returned whenever `revealed = true` (as the brief says) and drawn
    only when `show_mean = true`.
 7. **Broadcast triggers.** Statement-level on `heatmap.votes` (one signal per
@@ -93,14 +103,19 @@ and kept each one easy to change.
 8. **CSV headers** in Hebrew (`מזהה אירוע`, `ציון X`, `ציון Y`,
    `זמן (שעון ישראל)`), which is what the BOM requirement implies. File name uses
    the short code, not the event name.
-9. **Bubble sizing** (all in `src/modules/heatmap/scale.ts`): grid spacing
-   84 px on the 1920×1080 stage, `CAP_RATIO = 0.9` (max diameter 75.6 px),
-   `COUNT_FLOOR = 5`, `MIN_DIAMETER = 46` px (fits a two-digit count at 30 px
-   ExtraBold). Consequence: at the floor scale, counts 1 and 2 both draw at
-   the minimum (46 and 47.8 px); the printed number tells them apart. Tune
-   after the dry run.
-10. **Quadrant names** sit in a band above and below the grid, inside each
-    quadrant's columns, so they can never collide with a bubble.
+9. **Heatmap (brief V5, alternative B)**, all in `src/modules/heatmap/density.ts`:
+   Gaussian density on a 140 × 140 raster, bandwidth 0.9 score units, each
+   respondent a kernel with peak 1, normalised to max(peak, 2.5); ColorBrewer
+   YlOrRd (9 classes, to dark red #800026), transparent below 3 % intensity.
+   The map's scale runs 0–11 rather than 0.5–10.5, so the corner quadrant names
+   sit clear of scores 1 and 10; 5.5 stays the exact centre.
+10. **Dots and quadrant names.** One dark-blue dot with a white border per
+    respondent, spread on a sunflower spiral (14 px) around its score point.
+    The brief keys the offset to the device id; the public display function
+    never returns device ids, so the offset is keyed to the dot's index within
+    the point (fixed: a new dot never moves the others). Quadrant names sit in
+    the corners on 78 % white. The backup bubble matrix (alternative A) stays
+    available at `/heatmap/display/<id>?view=matrix`.
 11. **Participant extras** needed for weak reception: automatic retry (votes are
     idempotent upserts), an offline/error message, and the last submitted vote
     remembered in `localStorage` so a reload shows the confirmation. All copy is

@@ -156,7 +156,8 @@ body.cursor-hidden * {
   color: var(--white);
 }
 
-/* Matrix (dir="ltr" container; numbers in stage px) */
+/* Matrix: alternative A, kept as the backup view (?view=matrix).
+   dir="ltr" container; numbers in stage px. */
 /* Shifted toward the centre so side seats see the chart square on. */
 .matrix {
   position: absolute;
@@ -283,6 +284,192 @@ body.cursor-hidden * {
   white-space: nowrap;
 }
 
+/* Heatmap (brief V5, alternative B). dir="ltr" container; stage px.
+   Same box as the matrix, so the right-hand column does not move. */
+.heatmap {
+  position: absolute;
+  left: 120px;
+  top: 0;
+  width: 1040px;
+  height: 1080px;
+  animation: hm-fade 900ms ease-out;
+}
+
+.hm-plot {
+  position: absolute;
+}
+
+.hm-canvas,
+.hm-layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.hm-canvas {
+  image-rendering: auto;
+}
+
+.hm-frame {
+  fill: none;
+  stroke: var(--rule);
+  stroke-width: 2;
+}
+
+.hm-quadline {
+  stroke: var(--ink);
+  stroke-width: 3;
+  stroke-dasharray: 14 10;
+}
+
+/* Quadrant names in the corners, on semi-transparent white (brief V5). */
+.hm-quadrants {
+  position: absolute;
+  inset: 0;
+}
+
+.hm-quadrant {
+  position: absolute;
+  max-width: 400px;
+  padding: 8px 18px;
+  border-radius: var(--radius-pill);
+  background: rgb(255 255 255 / 0.78);
+  color: var(--ink);
+  font-weight: var(--fw-bold);
+  font-size: 28px;
+  line-height: 1.05;
+}
+
+.hm-quadrant.is-tr { top: 14px; right: 14px; }
+.hm-quadrant.is-tl { top: 14px; left: 14px; }
+.hm-quadrant.is-br { bottom: 14px; right: 14px; }
+.hm-quadrant.is-bl { bottom: 14px; left: 14px; }
+
+/* One dot per respondent: dark blue with a white border. */
+.hm-dot {
+  fill: var(--ink);
+  stroke: var(--white);
+  stroke-width: 3;
+}
+
+.hm-plot .hm-dot {
+  animation: hm-fade 600ms ease-out;
+}
+
+.hm-mean-halo {
+  fill: none;
+  stroke: var(--white);
+  stroke-width: 14;
+}
+
+.hm-mean-ring {
+  fill: none;
+  stroke: var(--blue);
+  stroke-width: 7;
+}
+
+.hm-mean-label {
+  fill: var(--blue);
+  font-family: var(--font-core);
+  font-weight: var(--fw-extrabold);
+  font-size: 32px;
+  stroke: var(--white);
+  stroke-width: 8px;
+  stroke-linejoin: round;
+  paint-order: stroke;
+}
+
+.hm-tick {
+  position: absolute;
+  font-weight: var(--fw-bold);
+  font-size: 32px;
+  line-height: 1;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+.hm-tick-y {
+  right: calc(1040px - 150px + 16px);
+  transform: translateY(-50%);
+}
+
+.hm-tick-x {
+  top: 892px;
+  transform: translateX(-50%);
+}
+
+.hm-axis-x {
+  position: absolute;
+  left: 150px;
+  top: 938px;
+  width: 840px;
+  font-weight: var(--fw-extrabold);
+  font-size: 38px;
+  line-height: 1;
+  text-align: center;
+  direction: rtl;
+}
+
+.hm-axis-y {
+  position: absolute;
+  left: 52px;
+  top: 456px;
+  width: 840px;
+  font-weight: var(--fw-extrabold);
+  font-size: 38px;
+  line-height: 1;
+  text-align: center;
+  direction: rtl;
+  transform: translate(-50%, -50%) rotate(-90deg);
+  white-space: nowrap;
+}
+
+/* Legend under the map: "פחות צפוף" [ramp] "יותר צפוף" · ● one dot = one respondent.
+   Starts at the map's right edge (RTL), clear of the footer lockup at the left. */
+.hm-legend {
+  position: absolute;
+  left: 150px;
+  top: 1000px;
+  width: 840px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 14px;
+  font-weight: var(--fw-semibold);
+  font-size: 26px;
+  line-height: 1;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.hm-legend-ramp {
+  width: 200px;
+  height: 20px;
+  border-radius: var(--radius-pill);
+}
+
+.hm-legend-dot {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-inline-start: 24px;
+}
+
+@keyframes hm-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .heatmap,
+  .hm-plot .hm-dot {
+    animation: none;
+  }
+}
+
 /* ------------------------------------------------------------ Host bar */
 /* Screen pixels, not stage pixels: usable at any window size. */
 
@@ -308,6 +495,23 @@ body.cursor-hidden * {
 
 .hostbar-back:hover {
   background: var(--ink);
+}
+
+/* Reset: a data action, set apart at the far end; asks once more in place. */
+.hostbar-reset {
+  margin-inline-start: var(--space-3);
+  background: transparent;
+  color: var(--white);
+}
+
+.hostbar-reset:hover:not(:disabled) {
+  background: var(--ink);
+}
+
+.hostbar-reset.is-confirming,
+.hostbar-reset.is-confirming:hover:not(:disabled) {
+  background: var(--white);
+  color: var(--blue);
 }
 
 .hostbar.is-hidden {

@@ -1,9 +1,10 @@
 /**
  * Every text of the Live Heatmap module, in one place.
  *
- * Section A is copied verbatim from the brief (section 7) and must not be
- * edited without updating the brief. Section B is UI microcopy that the brief
- * does not specify; it needs a Hebrew read-through before the first session.
+ * Section A is copied from development brief V5 (28 Oct 2026), whose wording
+ * is identical to the slide "שתי שאלות למפת החום" of 28 Oct. Do not edit it
+ * without updating the brief. Section B is UI microcopy the brief does not
+ * specify; it needs a Hebrew read-through before the first session.
  */
 
 export interface Band {
@@ -14,47 +15,56 @@ export interface Band {
 
 export interface Question {
   axis: "x" | "y";
+  /** The slide's column tag, e.g. "ציר X". */
+  axisTag: string;
+  /** Shown as the question itself (the brief: no extra question line). */
   axisLabel: string;
-  question: string;
+  /** Optional question line and note; empty in V5, shown only when set. */
+  text?: string;
+  note?: string;
   bands: readonly Band[];
 }
 
 /* ------------------------------------------------------------------------ */
-/* A. Brief, section 7 — use exactly as written                             */
+/* A. Brief V5 / slide of 28 Oct 2026 — use exactly as written              */
 /* ------------------------------------------------------------------------ */
 
 export const OPENING_LINE = "סולם 1 עד 10, לפי מה שקורה היום בפועל. אנונימי.";
 
 export const QUESTION_X: Question = {
   axis: "x",
-  axisLabel: "שימוש אישי מתקדם ב-AI",
-  question: "עד כמה AI הוא חלק מתקדם מהעבודה האישית שלי היום?",
+  axisTag: "ציר X",
+  axisLabel: "שימוש אישי ב-AI בעולמות התוכן המקצועיים",
   bands: [
-    { from: 1, to: 2, text: "צ'אט מזדמן, שאלה-תשובה" },
-    { from: 3, to: 4, text: "שימוש שבועי במשימות מוגדרות" },
-    { from: 5, to: 6, text: "שימוש יומי עם הנחיות שבניתי" },
-    { from: 7, to: 8, text: "סוכנים מבצעים עבורי רצפי עבודה" },
-    { from: 9, to: 10, text: "סוכנים שאני מתכנן, מתחזק ומעריך" },
+    { from: 1, to: 2, text: "כמעט ולא" },
+    { from: 3, to: 4, text: "מדי פעם, במשימות פשוטות" },
+    { from: 5, to: 6, text: "כל יום, במשימות שגרתיות" },
+    { from: 7, to: 8, text: "כל יום, במשימות שגרתיות ומורכבות" },
+    { from: 9, to: 10, text: "בכל שלבי העבודה, בשיטה קבועה ומבוקרת" },
   ],
 };
 
 export const QUESTION_Y: Question = {
   axis: "y",
-  axisLabel: "הובלת האנשים בשינוי",
-  question: "עד כמה אני מוביל את הצוות שלי בשינוי ש-AI מביא?",
+  axisTag: "ציר Y",
+  axisLabel: "ניהול והובלת צוותים בעידן AI",
   bands: [
-    { from: 1, to: 2, text: "הצוות מסתדר לבד" },
-    { from: 3, to: 4, text: "עידוד ומידע כללי" },
-    { from: 5, to: 6, text: "כיוון וגבולות ברורים לצוות" },
-    { from: 7, to: 8, text: "שיתוף בהחלטות ושיחה על חששות" },
-    { from: 9, to: 10, text: "הובלה פעילה של תפקידים ופיתוח מקצועי" },
+    { from: 1, to: 2, text: "עוד לא מטפל בזה כמנהל" },
+    { from: 3, to: 4, text: "מעודד שימוש, בלי כללים מוגדרים" },
+    { from: 5, to: 6, text: "מעודד שימוש וקובע לצוות כללי עבודה ברורים" },
+    { from: 7, to: 8, text: "מעודד, מגדיר כללים, משימות ומלווה כל עובד אישית בשינוי" },
+    {
+      from: 9,
+      to: 10,
+      text: "מעודד שימוש קבוע ומייצר תשתיות עבודה, משנה הגדרות תפקידים, פרופיל גיוס וחלוקת זמן למשימות",
+    },
   ],
 };
 
 export const QUADRANTS = {
   topRight: "מובילים מהחזית", // high X, high Y
-  bottomRight: "השימוש שלי מקדים את הצוות", // high X, low Y
-  topLeft: "הצוות לפני הכלים", // low X, high Y
+  bottomRight: "השימוש האישי מקדים את הניהול", // high X, low Y
+  topLeft: "הניהול מקדים את הכלים", // low X, high Y
   bottomLeft: "בנקודת התחלה", // low X, low Y
 } as const;
 
@@ -66,6 +76,26 @@ export const MESSAGES = {
 /** Display counter: "X הצביעו". */
 export const VOTERS_SUFFIX = "הצביעו";
 export const MEAN_LABEL = "ממוצע";
+
+/** Legend under the map. */
+export const LEGEND = {
+  less: "פחות צפוף",
+  more: "יותר צפוף",
+  dot: "נקודה אחת = משיב אחד",
+} as const;
+
+/** Host control labels, as listed in the brief. */
+export const CONTROLS = {
+  reveal: "חשוף תוצאות",
+  hide: "הסתר",
+  closeVoting: "סגור הצבעה",
+  showMean: "הצג ממוצע",
+  hideMean: "הסתר ממוצע",
+  showDots: "הצג נקודות",
+  hideDots: "הסתר נקודות",
+  reset: "אפס אירוע",
+  newEvent: "אירוע חדש",
+} as const;
 
 /* ------------------------------------------------------------------------ */
 /* B. UI microcopy (not in the brief) — review before the first session      */
@@ -87,14 +117,19 @@ export const PARTICIPANT_UI = {
 export const DISPLAY_UI = {
   notFound: "האירוע לא נמצא",
   offline: "אין חיבור. מנסה להתחבר מחדש…",
-  reveal: "חשיפת תוצאות",
-  hide: "הסתרת תוצאות",
-  closeVoting: "סגירת הצבעה",
-  openVoting: "פתיחת הצבעה",
-  showMean: "הצגת ממוצע",
-  hideMean: "הסתרת ממוצע",
+  reveal: CONTROLS.reveal,
+  hide: CONTROLS.hide,
+  closeVoting: CONTROLS.closeVoting,
+  openVoting: "פתח הצבעה",
+  showMean: CONTROLS.showMean,
+  hideMean: CONTROLS.hideMean,
+  showDots: CONTROLS.showDots,
+  hideDots: CONTROLS.hideDots,
+  reset: CONTROLS.reset,
+  resetConfirm: "לאשר איפוס?",
   votingClosedBadge: "ההצבעה סגורה",
   qrAlt: "קוד QR להצבעה",
+  mapAlt: "מפת חום של ההצבעות",
   hostControls: "שליטת מנחה",
   backToConsole: "חזרה לניהול",
 } as const;
@@ -108,8 +143,8 @@ export const HOST_UI = {
   pinWrong: "הקוד שגוי.",
   pinLocked: "יותר מדי ניסיונות שגויים. נסו שוב בעוד דקה.",
   pinNotConfigured: "קוד המנחה עדיין לא הוגדר במערכת.",
-  newEvent: "אירוע חדש",
-  eventName: "שם האירוע",
+  newEvent: CONTROLS.newEvent,
+  eventName: "שם האירוע, למשל: סדנת מנהלים 02.11",
   create: "יצירה",
   events: "אירועים",
   noEvents: "אין אירועים עדיין.",
@@ -122,20 +157,23 @@ export const HOST_UI = {
   revealed: "תוצאות גלויות",
   hidden: "תוצאות מוסתרות",
   meanOn: "ממוצע מוצג",
+  dotsOff: "נקודות מוסתרות",
   openDisplay: "פתיחת מסך הצגה",
-  reveal: "חשיפת תוצאות",
-  hide: "הסתרת תוצאות",
-  closeVoting: "סגירת הצבעה",
-  reopenVoting: "פתיחה מחדש",
-  showMean: "הצגת ממוצע",
-  hideMean: "הסתרת ממוצע",
+  reveal: CONTROLS.reveal,
+  hide: CONTROLS.hide,
+  closeVoting: CONTROLS.closeVoting,
+  reopenVoting: "פתח הצבעה",
+  showMean: CONTROLS.showMean,
+  hideMean: CONTROLS.hideMean,
+  showDots: CONTROLS.showDots,
+  hideDots: CONTROLS.hideDots,
   exportCsv: "ייצוא CSV",
-  reset: "איפוס",
+  reset: CONTROLS.reset,
   delete: "מחיקה",
   cancel: "ביטול",
   resetTitle: "לאפס את האירוע?",
   resetBody: (name: string) =>
-    `כל ההצבעות של "${name}" יימחקו, התוצאות יוסתרו וההצבעה תיפתח מחדש. אי אפשר לבטל את הפעולה.`,
+    `כל ההצבעות של "${name}" יימחקו, התוצאות יוסתרו וההצבעה תיפתח מחדש. אי אפשר לבטל את הפעולה. כדי לשמור את התוצאות, ייצאו CSV לפני האיפוס.`,
   deleteTitle: "למחוק את האירוע?",
   deleteBody: (name: string) => `האירוע "${name}" וכל ההצבעות שלו יימחקו לצמיתות. אי אפשר לבטל את הפעולה.`,
   actionFailed: "הפעולה לא הצליחה. נסו שוב.",

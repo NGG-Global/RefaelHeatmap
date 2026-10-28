@@ -5,33 +5,30 @@
  *   npm run seed:40 -- --app http://localhost:5173    # also checks the rendered display
  *   npm run seed:40 -- --cleanup                      # delete the event afterwards
  *
- * Checks, against exact expected values: cell counts, voter count, mean,
- * bubble positions / labels / diameters (√count, cap, floor, minimum), no
- * overlap, midlines, mean marker, export rows and the CSV file. Also checks at
- * HTTP level, with the publishable key only, that results are hidden before
- * the reveal (acceptance 3) and that voting is refused after close (4).
- * The rendered check needs Playwright (`npx playwright install chromium`).
+ * Checks, against exact expected values: cell counts, voter count, mean, the
+ * heatmap's densest point and transparent areas (density.ts), export rows and
+ * the CSV file. Also checks at HTTP level, with the publishable key only, that
+ * results are hidden before the reveal (acceptance 3) and that voting is
+ * refused after close (4). The rendered check (brief V5: dark concentration in
+ * the right place, dot count = counter, quadrant lines in place) needs
+ * Playwright (`npx playwright install chromium`).
  */
 import { randomUUID } from "node:crypto";
 import { mkdirSync } from "node:fs";
 import { createRequire } from "node:module";
 import { exportRowsToCsv } from "../src/modules/heatmap/exportCsv.ts";
-import {
-  COUNT_FLOOR,
-  MAX_DIAMETER,
-  MIN_DIAMETER,
-  PLOT_SIZE,
-  SPACING,
-  bubbleDiameter,
-  pointOffset,
-} from "../src/modules/heatmap/scale.ts";
+import { CUTOFF, DOMAIN_MAX, DOMAIN_MIN, GRID, colour, density, intensityAt } from "../src/modules/heatmap/density.ts";
 import { checker, loadConfig, readPin, rpcClient } from "./lib/env.ts";
 
 type Cell = [number, number, number];
 
+/** Score units per raster cell. */
+const STEP = (DOMAIN_MAX - DOMAIN_MIN) / GRID;
+
 /**
- * 40 votes. (7,8) holds the maximum (8) and has populated neighbours at (8,8)
- * and (7,7), so the largest bubble sits next to others: they must not overlap.
+ * 40 votes. (7,8) holds the maximum (8) with populated neighbours at (8,8) and
+ * (7,7): the darkest colour must sit there, not between clusters. Single votes
+ * at (10,10), (2,2) and (3,1) must stay light.
  * Mean: x = 242 / 40 = 6.05, y = 260 / 40 = 6.50 (between grid points).
  */
 const DISTRIBUTION: Cell[] = [
@@ -54,7 +51,6 @@ const DISTRIBUTION: Cell[] = [
 
 const TOTAL = DISTRIBUTION.reduce((s, [, , n]) => s + n, 0);
 const EXPECTED_CELLS = [...DISTRIBUTION].sort((a, b) => a[0] - b[0] || a[1] - b[1]);
-const HIGHEST = Math.max(...DISTRIBUTION.map(([, , n]) => n));
 // Means in hundredths, with integer arithmetic (as the database rounds).
 const MEAN_X_100 = Math.round((DISTRIBUTION.reduce((s, [x, , n]) => s + x * n, 0) * 100) / TOTAL);
 const MEAN_Y_100 = Math.round((DISTRIBUTION.reduce((s, [, y, n]) => s + y * n, 0) * 100) / TOTAL);
@@ -123,52 +119,25 @@ async function main() {
     after.mean,
   );
 
-  // --- bubble geometry -----------------------------------------------------------
-  const geometry = EXPECTED_CELLS.map(([x, y, n]) => ({
-    x,
-    y,
-    n,
-    cx: pointOffset(x),
-    cy: PLOT_SIZE - pointOffset(y),
-    d: bubbleDiameter(n, HIGHEST),
-  }));
-  console.log("\nExpected bubbles (stage px, plot origin top-left):");
-  console.table(
-    geometry.map((g) => ({
-      point: `(${g.x}, ${g.y})`,
-      count: g.n,
-      centre: `${g.cx}, ${g.cy}`,
-      diameter: Number(g.d.toFixed(2)),
-      "area vs max": Number(((g.d * g.d) / (MAX_DIAMETER * MAX_DIAMETER)).toFixed(3)),
-    })),
-  );
-
-  const scaleTo = Math.max(HIGHEST, COUNT_FLOOR);
-  const biggest = geometry.find((g) => g.n === HIGHEST)!;
-  t.check(close(biggest.d, MAX_DIAMETER), `largest bubble capped at ${MAX_DIAMETER.toFixed(1)} px (< ${SPACING} px spacing)`);
-  for (const g of geometry) {
-    const raw = MAX_DIAMETER * Math.sqrt(g.n / scaleTo);
-    if (raw >= MIN_DIAMETER) {
-      t.check(
-        close((g.d * g.d) / (biggest.d * biggest.d), g.n / HIGHEST, 1e-9),
-        `(${g.x},${g.y}) area ∝ count: ${g.n}/${HIGHEST}`,
-      );
-    } else {
-      t.check(g.d === MIN_DIAMETER, `(${g.x},${g.y}) count ${g.n} drawn at the ${MIN_DIAMETER} px minimum`);
-    }
-  }
+  // --- heatmap (density.ts, as drawn by the display) ------------------------------
+  const map = density(EXPECTED_CELLS);
+  const peakIndex = map.values.reduce((best, v, i) => (v > map.values[best] ? i : best), 0);
+  const peakX = DOMAIN_MIN + ((peakIndex % GRID) + 0.5) * STEP;
+  const peakY = DOMAIN_MIN + (GRID - 1 - Math.floor(peakIndex / GRID) + 0.5) * STEP;
   t.check(
-    close(bubbleDiameter(2, 2), MAX_DIAMETER * Math.sqrt(2 / COUNT_FLOOR)),
-    `floor: with a top count of 2, sizes scale against ${COUNT_FLOOR}`,
+    Math.round(peakX) === 7 && Math.round(peakY) === 8,
+    "darkest point of the heatmap is at the largest cluster (7, 8)",
+    { x: peakX.toFixed(2), y: peakY.toFixed(2) },
   );
-  let overlaps = 0;
-  for (const a of geometry) {
-    for (const b of geometry) {
-      if (a === b) continue;
-      if (Math.hypot(a.cx - b.cx, a.cy - b.cy) < a.d / 2 + b.d / 2) overlaps++;
-    }
-  }
-  t.check(overlaps === 0, "no two bubbles overlap (max-count point has populated neighbours)", overlaps);
+  t.check(intensityAt(map, 7, 8) > 0.95, "(7, 8) takes the darkest colour", intensityAt(map, 7, 8));
+  t.check(
+    [[10, 10], [2, 2], [3, 1]].every(([x, y]) => intensityAt(map, x, y) < 0.5),
+    "single votes stay in the light colours",
+  );
+  t.check(
+    colour(intensityAt(map, 1, 10))[3] === 0 && intensityAt(map, 1, 10) < CUTOFF,
+    "areas with no respondents nearby are transparent",
+  );
 
   // --- export --------------------------------------------------------------------
   const exported = await rpc<{ status: string; rows: { event_id: string; x: number; y: number; updated_at: string }[] }>(
@@ -196,7 +165,7 @@ async function main() {
   );
 
   // --- rendered display (optional) -------------------------------------------------
-  if (appUrl) await checkRenderedDisplay(appUrl, eventId, geometry, t.check);
+  if (appUrl) await checkRenderedDisplay(appUrl, eventId, pin, rpc, t.check);
 
   // --- rule 4: closed voting refuses votes (direct RPC call) ---------------------------
   await rpc("heatmap_host_set_state", { p_pin: pin, p_event_id: eventId, p_voting_open: false });
@@ -223,19 +192,11 @@ async function main() {
   process.exit(t.failed === 0 ? 0 : 1);
 }
 
-interface Geometry {
-  x: number;
-  y: number;
-  n: number;
-  cx: number;
-  cy: number;
-  d: number;
-}
-
 async function checkRenderedDisplay(
   appUrl: string,
   eventId: string,
-  geometry: Geometry[],
+  pin: string,
+  rpc: ReturnType<typeof rpcClient>,
   check: (ok: boolean, label: string, detail?: unknown) => void,
 ) {
   // Optional dependency: imported by name so the build does not require it.
@@ -258,74 +219,115 @@ async function checkRenderedDisplay(
   const browser = await playwright.chromium.launch();
   const page = await browser.newPage({ viewport: { width: 1920, height: 1080 } });
   await page.goto(`${appUrl.replace(/\/+$/, "")}/heatmap/display/${eventId}`);
-  await page.waitForSelector(".results .mean");
-  await page.waitForTimeout(500); // let the 250 ms resize transition settle
+  await page.waitForSelector(".heatmap .hm-mean");
+  await page.waitForTimeout(1200); // let the reveal fade settle
 
-  const rendered: {
-    bubbles: { transform: string; scale: string; r: number; label: string }[];
+  interface Rendered {
+    size: number;
+    grid: number;
+    pixels: number[];
+    dots: number[][];
     counter: string;
-    midlines: number[][];
+    quadLines: number[][];
+    quadrants: (string | null)[];
     mean: string;
     meanLabel: string;
-    axisDir: string | null | undefined;
-  } = await page.evaluate(() => {
-    const groups = [...document.querySelectorAll(".matrix-bubbles > g")];
-    return {
-      bubbles: groups.map((g) => ({
-        transform: g.getAttribute("transform") ?? "",
-        scale: (g.querySelector("circle") as SVGCircleElement).style.transform,
-        r: Number(g.querySelector("circle")?.getAttribute("r")),
-        label: g.querySelector("text")?.textContent ?? "",
-      })),
-      counter: document.querySelector(".results-count .count-number")?.textContent ?? "",
-      midlines: [...document.querySelectorAll(".matrix-midlines line")].map((l) =>
-        ["x1", "y1", "x2", "y2"].map((a) => Number(l.getAttribute(a))),
-      ),
-      mean: document.querySelector(".mean")?.getAttribute("transform") ?? "",
-      meanLabel: document.querySelector(".mean-label")?.textContent ?? "",
-      axisDir: document.querySelector(".matrix")?.getAttribute("dir"),
-    };
-  });
-
-  const parse = (t: string) => t.match(/-?[\d.]+/g)!.map(Number);
-  check(rendered.bubbles.length === geometry.length, `display draws ${geometry.length} bubbles`, rendered.bubbles.length);
-  let positionsOk = true;
-  let labelsOk = true;
-  let sizesOk = true;
-  for (const g of geometry) {
-    const b = rendered.bubbles.find((r) => {
-      const [x, y] = parse(r.transform);
-      return close(x, g.cx) && close(y, g.cy);
-    });
-    if (!b) {
-      positionsOk = false;
-      continue;
-    }
-    if (b.label !== String(g.n)) labelsOk = false;
-    const s = parse(b.scale)[0];
-    if (!close(s * b.r * 2, g.d)) sizesOk = false;
+    legend: string;
+    dir: string | null | undefined;
   }
-  check(positionsOk, "every bubble is centred on its grid point");
-  check(labelsOk, "every bubble prints its count");
-  check(sizesOk, "every bubble has the expected diameter");
-  check(rendered.counter === String(TOTAL), `counter shows ${TOTAL}`, rendered.counter);
-  const mid = PLOT_SIZE / 2;
+  const read = (): Promise<Rendered> =>
+    page.evaluate(() => {
+      const plot = document.querySelector(".hm-plot") as HTMLElement;
+      const canvas = document.querySelector(".hm-canvas") as HTMLCanvasElement;
+      const ctx = canvas.getContext("2d")!;
+      const pixels = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+      return {
+        size: plot.offsetWidth,
+        grid: canvas.width,
+        pixels: Array.from(pixels),
+        dots: [...document.querySelectorAll(".hm-plot .hm-dot")].map((c) => [
+          Number(c.getAttribute("cx")),
+          Number(c.getAttribute("cy")),
+        ]),
+        counter: document.querySelector(".results-count .count-number")?.textContent ?? "",
+        quadLines: [...document.querySelectorAll(".hm-quadline")].map((l) =>
+          ["x1", "y1", "x2", "y2"].map((a) => Number(l.getAttribute(a))),
+        ),
+        quadrants: [...document.querySelectorAll(".hm-quadrant")].map((q) => q.textContent),
+        mean: document.querySelector(".hm-mean")?.getAttribute("transform") ?? "",
+        meanLabel: document.querySelector(".hm-mean-label")?.textContent ?? "",
+        legend: document.querySelector(".hm-legend")?.textContent ?? "",
+        dir: document.querySelector(".heatmap")?.getAttribute("dir"),
+      };
+    });
+
+  const r = await read();
+  const unit = r.size / (DOMAIN_MAX - DOMAIN_MIN);
+  const px = (x: number) => (x - DOMAIN_MIN) * unit;
+  const py = (y: number) => r.size - (y - DOMAIN_MIN) * unit;
+
+  check(r.dir === "ltr", "map container is dir=ltr (axes not mirrored)");
+  check(r.dots.length === TOTAL && r.counter === String(TOTAL), `dot count = counter = ${TOTAL}`, {
+    dots: r.dots.length,
+    counter: r.counter,
+  });
+  // Each dot belongs to the score point it is nearest to.
+  const perPoint = new Map<string, number>();
+  for (const [cx, cy] of r.dots) {
+    const key = `${Math.round(cx / unit + DOMAIN_MIN)},${Math.round((r.size - cy) / unit + DOMAIN_MIN)}`;
+    perPoint.set(key, (perPoint.get(key) ?? 0) + 1);
+  }
   check(
-    rendered.midlines.some(([x1, , x2]) => x1 === mid && x2 === mid) &&
-      rendered.midlines.some(([, y1, , y2]) => y1 === mid && y2 === mid),
-    "midlines at 5.5 on both axes",
+    DISTRIBUTION.every(([x, y, n]) => perPoint.get(`${x},${y}`) === n) && perPoint.size === DISTRIBUTION.length,
+    "every score point shows one dot per respondent",
+    Object.fromEntries(perPoint),
   );
-  const [mx, my] = parse(rendered.mean);
+
+  // Darkest rendered pixel: lowest red + green among opaque pixels (YlOrRd).
+  let darkest = -1;
+  for (let p = 0; p < r.pixels.length / 4; p++) {
+    if (r.pixels[p * 4 + 3] < 200) continue;
+    if (darkest < 0 || r.pixels[p * 4 + 1] + r.pixels[p * 4] < r.pixels[darkest * 4 + 1] + r.pixels[darkest * 4]) darkest = p;
+  }
+  const dx = DOMAIN_MIN + ((darkest % r.grid) + 0.5) * STEP;
+  const dy = DOMAIN_MIN + (r.grid - 1 - Math.floor(darkest / r.grid) + 0.5) * STEP;
+  check(Math.round(dx) === 7 && Math.round(dy) === 8, "rendered dark concentration is at (7, 8)", {
+    x: dx.toFixed(2),
+    y: dy.toFixed(2),
+  });
+  // Top-left pixel (X ≈ 0, Y ≈ 11): nobody answered anywhere near it.
+  check(r.pixels[3] === 0, "rendered map is transparent where nobody answered");
+
+  const mid = px(5.5);
   check(
-    close(mx, pointOffset(MEAN_X_100 / 100)) && close(my, PLOT_SIZE - pointOffset(MEAN_Y_100 / 100)) && rendered.meanLabel === "ממוצע",
-    "mean marker at the continuous mean, labelled ממוצע",
-    rendered.mean,
+    r.quadLines.some(([x1, , x2]) => x1 === mid && x2 === mid) && r.quadLines.some(([, y1, , y2]) => y1 === mid && y2 === mid),
+    "dashed quadrant lines at 5.5 on both axes",
   );
-  check(rendered.axisDir === "ltr", "matrix container is dir=ltr (axes not mirrored)");
+  check(r.quadrants.length === 4, "four quadrant names in the corners");
+  const [mx, my] = (r.mean.match(/-?[\d.]+/g) ?? []).map(Number);
+  check(
+    close(mx, px(MEAN_X_100 / 100)) && close(my, py(MEAN_Y_100 / 100)) && r.meanLabel === "ממוצע",
+    "mean ring at the continuous mean, labelled ממוצע",
+    r.mean,
+  );
+  check(r.legend.includes("פחות צפוף") && r.legend.includes("יותר צפוף") && r.legend.includes("נקודה אחת = משיב אחד"),
+    "legend under the map");
 
   mkdirSync("test-results", { recursive: true });
   await page.screenshot({ path: "test-results/seed-40-display.png" });
   console.log("Screenshot: test-results/seed-40-display.png");
+
+  // Hide the dots: the display follows within one refetch.
+  const hid = await rpc<{ status: string }>("heatmap_host_set_state", { p_pin: pin, p_event_id: eventId, p_show_dots: false });
+  check(hid.status === "ok", "host hides the dots");
+  await page.waitForFunction(() => document.querySelectorAll(".hm-plot .hm-dot").length === 0, null, { timeout: 8000 }).catch(
+    () => undefined,
+  );
+  const hidden = await read();
+  check(hidden.dots.length === 0 && !hidden.legend.includes("נקודה אחת"), "dots and their legend entry are hidden");
+  await page.screenshot({ path: "test-results/seed-40-display-no-dots.png" });
+  await rpc("heatmap_host_set_state", { p_pin: pin, p_event_id: eventId, p_show_dots: true });
+
   await browser.close();
 }
 

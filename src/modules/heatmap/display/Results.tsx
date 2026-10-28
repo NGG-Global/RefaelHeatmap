@@ -1,9 +1,15 @@
-/** After the reveal: the bubble matrix, event name and voter count. Updates live. */
+/**
+ * After the reveal: the heatmap (or the backup bubble matrix), event name and
+ * voter count. Updates live.
+ */
 import { Stage } from "../../../platform/Stage";
 import type { Cell } from "../api";
 import { DISPLAY_UI, VOTERS_SUFFIX } from "../content";
 import { StageFooter } from "./StageFooter";
 import { BubbleMatrix } from "./BubbleMatrix";
+import { HeatmapMap } from "./HeatmapMap";
+
+export type ResultsView = "heatmap" | "matrix";
 
 interface Props {
   name: string;
@@ -11,13 +17,19 @@ interface Props {
   votingOpen: boolean;
   cells: readonly Cell[];
   mean: { x: number; y: number } | null;
+  showDots: boolean;
+  view: ResultsView;
 }
 
-export function Results({ name, voters, votingOpen, cells, mean }: Props) {
+export function Results({ name, voters, votingOpen, cells, mean, showDots, view }: Props) {
   return (
     <Stage ground="var(--white)">
       <div className="results">
-        <BubbleMatrix cells={cells} mean={mean} />
+        {view === "matrix" ? (
+          <BubbleMatrix cells={cells} mean={mean} />
+        ) : (
+          <HeatmapMap cells={cells} mean={mean} showDots={showDots} />
+        )}
 
         <h1 className="results-name">{name}</h1>
 

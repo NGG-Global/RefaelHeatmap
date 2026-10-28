@@ -9,7 +9,7 @@ begin;
 create extension if not exists pgtap with schema extensions;
 set local search_path = public, extensions;
 
-select plan(66);
+select plan(74);
 
 -- Test PIN (rolled back at the end, the real PIN is untouched).
 do $$ begin
@@ -99,6 +99,22 @@ select is(public.heatmap_display((current_setting('t.a')::jsonb ->> 'id')::uuid)
 select is(public.heatmap_display((current_setting('t.a')::jsonb ->> 'id')::uuid) -> 'mean',
   '{"x": 5.67, "y": 6.00}'::jsonb, 'after reveal: mean (continuous, two decimals)');
 
+-- Brief V5: the host shows or hides the respondent dots; other toggles leave it alone.
+select is(public.heatmap_display((current_setting('t.a')::jsonb ->> 'id')::uuid) ->> 'show_dots', 'true',
+  'dots are shown by default');
+select is(public.heatmap_host_set_state('test-pin-123', (current_setting('t.a')::jsonb ->> 'id')::uuid,
+  p_show_dots => false) ->> 'show_dots', 'false', 'host hides the dots');
+select is(public.heatmap_display((current_setting('t.a')::jsonb ->> 'id')::uuid) ->> 'show_dots', 'false',
+  'display reports the dots hidden');
+select is(public.heatmap_host_set_state('test-pin-123', (current_setting('t.a')::jsonb ->> 'id')::uuid,
+  p_show_mean => true) ->> 'show_dots', 'false', 'another toggle leaves show_dots unchanged');
+select is((select e ->> 'show_dots'
+             from jsonb_array_elements(public.heatmap_host_list_events('test-pin-123') -> 'events') e
+            where e ->> 'id' = current_setting('t.a')::jsonb ->> 'id'), 'false',
+  'host list carries show_dots');
+select is(public.heatmap_host_set_state('test-pin-123', (current_setting('t.a')::jsonb ->> 'id')::uuid,
+  p_show_dots => true, p_show_mean => false) ->> 'show_dots', 'true', 'host shows the dots again');
+
 select is(public.heatmap_host_set_state('test-pin-123', (current_setting('t.a')::jsonb ->> 'id')::uuid,
   p_revealed => false) ->> 'revealed', 'false', 'host hides again');
 select is(public.heatmap_display((current_setting('t.a')::jsonb ->> 'id')::uuid) -> 'cells', 'null'::jsonb,
@@ -170,6 +186,10 @@ select is(public.heatmap_host_list_events('test-pin-123') ->> 'status', 'ok', 't
 reset role;
 select is((select failed_attempts from platform.host_credentials), 0, 'a correct PIN resets the counter');
 
+select is((select count(*)::int from pg_proc
+            where proname = 'heatmap_host_set_state' and pronamespace = 'public'::regnamespace), 1,
+  'set_state has a single signature (no stale overload)');
+
 -- The browser roles reach nothing but the public functions.
 set local role anon;
 select throws_ok('select count(*) from heatmap.votes', '42501', null, 'anon cannot read heatmap.votes');
@@ -182,6 +202,8 @@ reset role;
 set local role authenticated;
 select throws_ok($$select public.heatmap_host_list_events('test-pin-123')$$, '42501', null,
   'execute is granted to anon only');
+select throws_ok($$select public.heatmap_host_set_state('test-pin-123', gen_random_uuid(), p_show_dots => false)$$,
+  '42501', null, 'set_state (new signature) is granted to anon only');
 reset role;
 
 -- ===========================================================================
