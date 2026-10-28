@@ -5,8 +5,13 @@ export const SUPABASE_PUBLISHABLE_KEY: string = import.meta.env.VITE_SUPABASE_PU
 
 export const isConfigured = SUPABASE_URL !== "" && SUPABASE_PUBLISHABLE_KEY !== "";
 
-/** Origin printed in QR codes and short links (a custom domain, when set). */
+/**
+ * Origin printed in QR codes and short links (a custom domain, when set).
+ * A value entered without a scheme ("example.com") gets https://, so the QR
+ * always encodes an absolute link that phone cameras open.
+ */
 export function publicBaseUrl(): string {
-  const configured = (import.meta.env.VITE_PUBLIC_BASE_URL ?? "").trim();
-  return (configured || window.location.origin).replace(/\/+$/, "");
+  const configured = (import.meta.env.VITE_PUBLIC_BASE_URL ?? "").trim().replace(/\/+$/, "");
+  if (!configured) return window.location.origin;
+  return /^https?:\/\//i.test(configured) ? configured : `https://${configured}`;
 }

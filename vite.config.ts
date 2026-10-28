@@ -28,6 +28,11 @@ function requireSupabaseEnv(): Plugin {
       else if (!key.startsWith("sb_publishable_") && jwtRole(key) !== "anon")
         problems.push("VITE_SUPABASE_PUBLISHABLE_KEY is not a publishable key (expected sb_publishable_… or the legacy anon key).");
 
+      // Optional; without a scheme the app adds https://, but a path or spaces would break every QR code.
+      const base = read("VITE_PUBLIC_BASE_URL").replace(/\/+$/, "");
+      if (base && !/^(https?:\/\/)?[a-z0-9.-]+(:\d+)?$/i.test(base))
+        problems.push("VITE_PUBLIC_BASE_URL must be an origin only, e.g. https://example.com (no path, no spaces).");
+
       if (problems.length === 0) return;
 
       const similar = Object.keys(process.env)
