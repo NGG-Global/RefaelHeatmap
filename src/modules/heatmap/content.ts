@@ -76,7 +76,7 @@ export const PARTICIPANT_UI = {
   resubmit: "עדכון ההצבעה",
   sending: "שולח…",
   answerBoth: "בחרו ציון בשתי השאלות",
-  slidePrompt: "גררו את המד או הקישו על מספר",
+  slidePrompt: "גררו את העיגול ימינה או שמאלה, או הקישו על מספר",
   sliderEmpty: "לא נבחר ציון",
   sendFailed: "השליחה לא הצליחה. בדקו את החיבור ונסו שוב.",
   offline: "אין חיבור לרשת. נסו שוב בעוד רגע.",

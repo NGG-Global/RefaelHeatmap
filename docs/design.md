@@ -26,7 +26,7 @@ colours (the system allows no transparency on content).
 | Need | Rule | Derived from |
 |---|---|---|
 | Gauge track | Five stadium segments (one per anchor band) in `--blue-wash`; the active band's segment in solid `--blue` | Stadium geometry; the system's empty image well (12 % blue wash), made solid |
-| Gauge handle | 48 px navy dot with the white score (20:1); no handle until first touch | The motif dot |
+| Gauge handle | 48 px navy dot with the white score (20:1). Before the first touch it idles on 5 with no number, between two navy arrow triangles that nudge outward; 5 is not recorded until touched | The motif dot |
 | Band readout | `--card` panel above the gauge: range in muted text, band text in ink ExtraBold | Card ground (brief) |
 | Idle control | `--blue-wash #E0E9FC` fill, ink label | The system's empty image well (12 % blue wash), made solid |
 | Primary action | Blue stadium button, ExtraBold label | Stadium geometry |
@@ -47,7 +47,7 @@ All text/ground pairs meet WCAG AA: lowest is white on a bubble (5.3:1);
 - **Participant (phone).** Navy hero with the opening line; two questions, each a
   numbered kicker (axis label), the question as a title, the band readout and a
   1–10 gauge (tap or drag; runs 1 → 10 left to right like the projector's X axis;
-  starts empty). Sticky submit bar on `--card`. Closed / not-found states are full
+  idle handle on 5 with arrows until the first touch, which is what records a score). Sticky submit bar on `--card`. Closed / not-found states are full
   navy message pages. The readout has a fixed minimum height, so the layout stays
   put while dragging.
 - **Display (projector).** Lobby on navy: QR (760 px, quiet zone included),
@@ -61,4 +61,5 @@ All text/ground pairs meet WCAG AA: lowest is white on a bubble (5.3:1);
 
 ## Motion
 
-None, except the 250 ms bubble resize the brief requires.
+None, except the 250 ms bubble resize the brief requires and the gauge's idle
+arrows (a functional cue that stops at the first touch; static with reduced motion).

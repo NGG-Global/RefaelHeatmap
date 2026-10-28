@@ -61,8 +61,9 @@ One iPhone (Safari) and one Android phone (Chrome).
 
 - [ ] Scan the QR from the projected lobby; the page opens without a login.
 - [ ] Opening line and both questions match section 7; Hebrew is right-aligned.
-- [ ] Both gauges start empty (no handle). Tapping a number or dragging the
-      handle sets the score and shows that band's text above the gauge;
+- [ ] Both gauges start with the handle on 5 (no number) and animated arrows.
+      Tapping a number, tapping the handle (records 5) or dragging sets the
+      score, hides the arrows and shows that band's text above the gauge;
       "שליחה" stays disabled until both questions are set.
 - [ ] Scrolling the page with a finger that starts on a gauge does not change
       the answer.

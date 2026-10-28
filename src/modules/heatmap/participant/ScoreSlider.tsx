@@ -1,18 +1,23 @@
 /**
  * A 1–10 gauge for phones: drag the handle or tap anywhere on the track.
- * - Starts empty: no handle and no value until the participant touches it, so
- *   nobody "votes" for a default position by not moving it.
+ * - Before the first touch the handle idles on START (5) with no number and two
+ *   animated arrows, showing what to do. That position is not a vote: the
+ *   value stays null until the participant taps or drags (a tap on the idle
+ *   handle records 5), so nobody is counted for a default they never chose.
  * - Snaps to whole numbers; runs 1 → 10 left to right (dir="ltr"), like a
  *   number line and like the X axis on the projector.
  * - The track is five segments, one per anchor band; the active band is blue.
  * - Custom pointer handling, because iOS Safari's native range input ignores
- *   taps on the track. role="slider" with arrow / Home / End keys.
+ *   taps on the track. role="slider" with arrow / Home / End keys; Enter or
+ *   Space on the idle handle records START.
  */
 import { useRef, type KeyboardEvent, type PointerEvent } from "react";
 
 const MIN = 1;
 const MAX = 10;
 const STEPS = MAX - MIN;
+/** Where the idle handle waits before the first touch. */
+const START = 5;
 /** Half the handle width: values 1 and 10 sit this far inside the track ends. */
 const INSET = 24;
 
@@ -111,8 +116,10 @@ export function ScoreSlider({ value, onChange, labelledBy, valueText }: Props) {
 
   function onKeyDown(e: KeyboardEvent<HTMLDivElement>) {
     let next: number | null = null;
-    if (e.key === "ArrowRight" || e.key === "ArrowUp") next = value === null ? MIN : value + 1;
-    else if (e.key === "ArrowLeft" || e.key === "ArrowDown") next = value === null ? MIN : value - 1;
+    const from = value ?? START;
+    if (e.key === "ArrowRight" || e.key === "ArrowUp") next = from + 1;
+    else if (e.key === "ArrowLeft" || e.key === "ArrowDown") next = from - 1;
+    else if ((e.key === "Enter" || e.key === " ") && value === null) next = START;
     else if (e.key === "Home") next = MIN;
     else if (e.key === "End") next = MAX;
     if (next === null) return;
@@ -156,11 +163,25 @@ export function ScoreSlider({ value, onChange, labelledBy, valueText }: Props) {
             {n}
           </span>
         ))}
-        {value !== null ? (
+        {value === null ? (
+          <>
+            <span className="slider-hint slider-hint-left" style={{ left: at(fraction(START)) }} aria-hidden="true">
+              <svg viewBox="0 0 10 14" width="10" height="14">
+                <polygon points="10,0 10,14 0,7" />
+              </svg>
+            </span>
+            <span className="slider-thumb is-idle" style={{ left: at(fraction(START)) }} aria-hidden="true" />
+            <span className="slider-hint slider-hint-right" style={{ left: at(fraction(START)) }} aria-hidden="true">
+              <svg viewBox="0 0 10 14" width="10" height="14">
+                <polygon points="0,0 0,14 10,7" />
+              </svg>
+            </span>
+          </>
+        ) : (
           <span className="slider-thumb" style={{ left: at(fraction(value)) }} aria-hidden="true">
             {value}
           </span>
-        ) : null}
+        )}
       </div>
     </div>
   );

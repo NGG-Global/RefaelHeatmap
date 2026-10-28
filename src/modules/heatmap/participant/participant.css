@@ -203,6 +203,48 @@
   pointer-events: none;
 }
 
+/* Before the first touch: arrows beside the idle handle say "drag me".
+   Functional motion, stops at the first touch, static with reduced motion. */
+.slider-hint {
+  position: absolute;
+  top: 19px;
+  width: 10px;
+  height: 14px;
+  fill: var(--navy);
+  pointer-events: none;
+}
+
+.slider-hint svg {
+  display: block;
+}
+
+.slider-hint-left {
+  margin-left: -42px;
+  animation: slider-nudge-left 1.2s ease-in-out infinite alternate;
+}
+
+.slider-hint-right {
+  margin-left: 32px;
+  animation: slider-nudge-right 1.2s ease-in-out infinite alternate;
+}
+
+@keyframes slider-nudge-left {
+  from { transform: translateX(0); }
+  to { transform: translateX(-6px); }
+}
+
+@keyframes slider-nudge-right {
+  from { transform: translateX(0); }
+  to { transform: translateX(6px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slider-hint-left,
+  .slider-hint-right {
+    animation: none;
+  }
+}
+
 /* Sticky submit bar */
 .p-submit {
   position: sticky;

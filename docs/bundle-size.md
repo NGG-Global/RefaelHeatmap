@@ -6,10 +6,10 @@ chunk + their static imports).
 
 | Route | JS (gzip) | JS (brotli) | CSS (gzip) |
 |---|---|---|---|
-| /v/:shortCode (participant) | 79.4 KB | 68.9 KB | 2.3 KB |
-| /heatmap/display/:eventId | 145.2 KB | 124.7 KB | 2.5 KB |
-| /heatmap/host | 137.2 KB | 117.8 KB | 2.4 KB |
+| /v/:shortCode (participant) | 79.5 KB | 69.1 KB | 2.5 KB |
+| /heatmap/display/:eventId | 145.2 KB | 124.8 KB | 2.5 KB |
+| /heatmap/host | 137.3 KB | 117.9 KB | 2.4 KB |
 
-- Participant first load: 110.9 KB in total = JS 79.4 KB + CSS 2.3 KB + HTML 0.5 KB + fonts 28.7 KB (woff2, already compressed).
-- Participant JS files: assets/index-Do21dVrF.js, assets/ParticipantPage-C14YKzoh.js, assets/content-1GPji1kM.js.
+- Participant first load: 111.2 KB in total = JS 79.5 KB + CSS 2.5 KB + HTML 0.5 KB + fonts 28.7 KB (woff2, already compressed).
+- Participant JS files: assets/index-C3NDJxQZ.js, assets/ParticipantPage-BO5IKros.js, assets/content-D_n0mshS.js.
 - The participant route contains no supabase-js (plain fetch to PostgREST); supabase-js ships only in the display/host chunk.
