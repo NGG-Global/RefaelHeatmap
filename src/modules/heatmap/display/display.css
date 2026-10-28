@@ -1,0 +1,307 @@
+/*
+ * Display — positions are absolute on the 1920 × 1080 stage, as the design
+ * system prescribes (margin-x 132, footer row at y 995).
+ */
+
+.display-blank {
+  position: fixed;
+  inset: 0;
+  background: var(--navy);
+}
+
+body.cursor-hidden,
+body.cursor-hidden * {
+  cursor: none !important;
+}
+
+.lobby,
+.results {
+  position: absolute;
+  inset: 0;
+}
+
+.stage-motif {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* Design-system footer lockup: NGG mark at x 26, y 995, 72 px tall. */
+.stage-logo {
+  position: absolute;
+  left: 26px;
+  top: 995px;
+  height: 72px;
+  width: auto;
+}
+
+.stage-badge {
+  position: absolute;
+  padding: 14px 28px;
+  border-radius: var(--radius-pill);
+  font-weight: var(--fw-extrabold);
+  font-size: 36px;
+  line-height: 1;
+}
+
+.count-number {
+  font-weight: var(--fw-extrabold);
+  font-size: 133.33px;
+  line-height: var(--lh-tight);
+  font-variant-numeric: tabular-nums;
+}
+
+.count-label {
+  font-weight: var(--fw-extrabold);
+  font-size: 64px;
+  line-height: var(--lh-tight);
+}
+
+/* ---------------------------------------------------------------- Lobby */
+
+.lobby {
+  color: var(--white);
+}
+
+.lobby-qr {
+  position: absolute;
+  left: 132px;
+  top: 96px;
+  width: 760px;
+  height: 760px;
+}
+
+.lobby-link {
+  position: absolute;
+  left: 132px;
+  top: 884px;
+  width: 760px;
+  font-weight: var(--fw-bold);
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.lobby-name {
+  position: absolute;
+  right: 132px;
+  top: 96px;
+  width: 820px;
+  font-weight: var(--fw-extrabold);
+  font-size: 88px;
+  line-height: var(--lh-tight);
+  overflow-wrap: anywhere;
+}
+
+.lobby-count {
+  position: absolute;
+  right: 132px;
+  top: 420px;
+  display: flex;
+  align-items: baseline;
+  gap: 28px;
+}
+
+.lobby-badge {
+  right: 132px;
+  top: 586px;
+  background: var(--white);
+  color: var(--navy);
+}
+
+/* -------------------------------------------------------------- Results */
+
+.results {
+  color: var(--ink);
+}
+
+.results-name {
+  position: absolute;
+  right: 65px;
+  top: 70px;
+  width: 640px;
+  font-weight: var(--fw-extrabold);
+  font-size: 64px;
+  line-height: 0.95;
+  overflow-wrap: anywhere;
+}
+
+.results-count {
+  position: absolute;
+  right: 65px;
+  top: 760px;
+  display: flex;
+  align-items: baseline;
+  gap: 24px;
+}
+
+.results-badge {
+  right: 65px;
+  top: 920px;
+  background: var(--navy);
+  color: var(--white);
+}
+
+/* Matrix (dir="ltr" container; numbers in stage px) */
+/* Shifted toward the centre so side seats see the chart square on. */
+.matrix {
+  position: absolute;
+  left: 120px;
+  top: 0;
+  width: 1040px;
+  height: 1080px;
+}
+
+.matrix-plot {
+  position: absolute;
+  overflow: visible;
+  font-family: var(--font-core);
+}
+
+.matrix-grid rect,
+.matrix-grid line {
+  fill: none;
+  stroke: var(--rule);
+  stroke-width: 2;
+}
+
+.matrix-midlines line {
+  stroke: var(--ink);
+  stroke-width: 4;
+}
+
+.bubble {
+  fill: var(--blue);
+  fill-opacity: 0.85;
+  stroke: var(--blue-deep);
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: transform 250ms ease-out;
+}
+
+.bubble-count {
+  fill: var(--white);
+  font-weight: var(--fw-extrabold);
+  font-variant-numeric: tabular-nums;
+}
+
+.mean-halo {
+  fill: var(--white);
+}
+
+.mean-ring {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 6;
+}
+
+.mean-cross {
+  stroke: var(--ink);
+  stroke-width: 4;
+}
+
+.mean-label {
+  fill: var(--ink);
+  font-weight: var(--fw-extrabold);
+  font-size: 32px;
+  stroke: var(--white);
+  stroke-width: 8px;
+  stroke-linejoin: round;
+  paint-order: stroke;
+}
+
+.matrix-tick {
+  position: absolute;
+  font-weight: var(--fw-bold);
+  font-size: 32px;
+  line-height: 1;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+.matrix-tick-y {
+  right: calc(1040px - 150px + 16px);
+  transform: translateY(-50%);
+}
+
+.matrix-tick-x {
+  top: 962px;
+  transform: translateX(-50%);
+}
+
+.matrix-axis-x {
+  position: absolute;
+  left: 150px;
+  top: 1004px;
+  width: 840px;
+  font-weight: var(--fw-extrabold);
+  font-size: 38px;
+  line-height: 1;
+  text-align: center;
+  direction: rtl;
+}
+
+.matrix-axis-y {
+  position: absolute;
+  left: 52px;
+  top: 490px;
+  width: 840px;
+  font-weight: var(--fw-extrabold);
+  font-size: 38px;
+  line-height: 1;
+  text-align: center;
+  direction: rtl;
+  transform: translate(-50%, -50%) rotate(-90deg);
+  white-space: nowrap;
+}
+
+.matrix-quadrant {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  padding: 0 18px;
+  font-weight: var(--fw-bold);
+  font-size: 34px;
+  line-height: 1;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+/* ------------------------------------------------------------ Host bar */
+/* Screen pixels, not stage pixels: usable at any window size. */
+
+.hostbar {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%);
+  display: flex;
+  gap: var(--space-2);
+  padding: var(--space-2);
+  border-radius: var(--radius-pill);
+  background: var(--navy);
+  z-index: 10;
+}
+
+.hostbar.is-hidden {
+  visibility: hidden;
+}
+
+.hostbar :focus-visible {
+  outline-color: var(--white);
+}
+
+.display-offline {
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  padding: 8px 16px;
+  border-radius: var(--radius-pill);
+  background: var(--navy);
+  color: var(--white);
+  font-weight: var(--fw-bold);
+  font-size: 16px;
+  z-index: 10;
+}

@@ -1,5 +1,6 @@
 import type { Question } from "../content";
 import { PARTICIPANT_UI } from "../content";
+import { keepHyphenated } from "../../../platform/text";
 
 interface Props {
   index: number;
@@ -17,10 +18,10 @@ export function ScoreQuestion({ index, question, value, onChange }: Props) {
         <span className="q-index" aria-hidden="true">
           {index}
         </span>
-        {question.axisLabel}
+        {keepHyphenated(question.axisLabel)}
       </p>
       <h2 id={titleId} className="q-title">
-        {question.question}
+        {keepHyphenated(question.question)}
       </h2>
       <div className="bands" role="radiogroup" aria-labelledby={titleId}>
         {question.bands.map((band) => {
@@ -48,7 +49,7 @@ export function ScoreQuestion({ index, question, value, onChange }: Props) {
                 ))}
               </div>
               <p id={bandId} className="band-text">
-                {band.text}
+                {keepHyphenated(band.text)}
               </p>
             </div>
           );

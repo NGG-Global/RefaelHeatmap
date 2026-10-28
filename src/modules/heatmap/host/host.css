@@ -1,0 +1,366 @@
+/* Host console — desktop first, works down to phone width. */
+
+.h-kicker {
+  font-weight: var(--fw-bold);
+  font-size: 15px;
+  line-height: 1.2;
+}
+
+.h-label {
+  display: block;
+  font-weight: var(--fw-bold);
+  font-size: 16px;
+  line-height: 1.2;
+}
+
+/* Inputs: white stadium on a dark ground — contrast without a border. */
+.h-input {
+  width: 100%;
+  min-height: 52px;
+  padding: 0 var(--space-5);
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: var(--white);
+  color: var(--ink);
+  font-weight: var(--fw-semibold);
+  font-size: 18px;
+}
+
+.h-input::placeholder {
+  color: var(--text-muted);
+}
+
+.h-input:focus-visible {
+  outline: 3px solid var(--blue);
+  outline-offset: 2px;
+}
+
+/* PIN gate */
+.h-gate {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-6) var(--space-4);
+  background: var(--navy);
+  color: var(--white);
+}
+
+.h-gate-form {
+  display: grid;
+  gap: var(--space-3);
+  width: 100%;
+  max-width: 380px;
+}
+
+.h-gate-title {
+  margin-bottom: var(--space-5);
+  font-weight: var(--fw-extrabold);
+  font-size: 48px;
+  line-height: var(--lh-tight);
+}
+
+.h-gate-button {
+  min-height: 52px;
+  margin-top: var(--space-2);
+}
+
+.h-gate-error {
+  min-height: 24px;
+  font-weight: var(--fw-bold);
+  font-size: 16px;
+  line-height: var(--lh-text);
+}
+
+/* Console */
+.h-page {
+  min-height: 100vh;
+  background: var(--mist);
+}
+
+.h-header {
+  background: var(--navy);
+  color: var(--white);
+  padding: var(--space-5) var(--space-4) var(--space-6);
+}
+
+.h-header :focus-visible {
+  outline-color: var(--white);
+}
+
+.h-header-inner,
+.h-create,
+.h-main {
+  max-width: 1120px;
+  margin: 0 auto;
+}
+
+.h-header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.h-title {
+  margin-top: var(--space-1);
+  font-weight: var(--fw-extrabold);
+  font-size: 34px;
+  line-height: 1;
+}
+
+.h-subtitle {
+  font-weight: var(--fw-semibold);
+}
+
+.h-subtitle::before {
+  content: "· ";
+}
+
+.h-create {
+  display: grid;
+  gap: var(--space-2);
+  margin-top: var(--space-6);
+}
+
+.h-create-row {
+  display: flex;
+  gap: var(--space-3);
+}
+
+.h-create-row .h-input {
+  flex: 1;
+  min-width: 0;
+}
+
+.h-create-row .btn {
+  min-height: 52px;
+  padding: 0 var(--space-6);
+}
+
+.h-create-error {
+  font-weight: var(--fw-bold);
+  font-size: 16px;
+}
+
+.h-main {
+  padding: var(--space-6) var(--space-4) var(--space-7);
+}
+
+.h-section-title {
+  margin-bottom: var(--space-4);
+  font-weight: var(--fw-extrabold);
+  font-size: 26px;
+  line-height: 1;
+  color: var(--ink);
+}
+
+.h-empty {
+  font-weight: var(--fw-semibold);
+  font-size: 18px;
+  color: var(--text-muted);
+}
+
+.h-banner {
+  margin-bottom: var(--space-5);
+  padding: var(--space-3) var(--space-5);
+  border-radius: var(--radius-pill);
+  background: var(--navy);
+  color: var(--white);
+  font-weight: var(--fw-bold);
+}
+
+.h-list {
+  display: grid;
+  gap: var(--space-4);
+}
+
+/* Event card: white panel on the mist ground, square corners, no border. */
+.h-card {
+  display: grid;
+  gap: var(--space-4);
+  padding: var(--space-5);
+  background: var(--white);
+}
+
+.h-card[aria-busy="true"] {
+  cursor: progress;
+}
+
+.h-card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.h-card-heading {
+  min-width: 0;
+}
+
+.h-card-title {
+  font-weight: var(--fw-extrabold);
+  font-size: 26px;
+  line-height: 1.05;
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+
+.h-card-meta {
+  margin-top: var(--space-2);
+  font-weight: var(--fw-semibold);
+  font-size: 15px;
+  color: var(--text-muted);
+}
+
+.h-card-meta strong {
+  font-weight: var(--fw-extrabold);
+  color: var(--ink);
+  letter-spacing: 0.06em;
+}
+
+.h-card-count {
+  display: flex;
+  flex: none;
+  align-items: baseline;
+  gap: var(--space-2);
+  font-weight: var(--fw-bold);
+  font-size: 17px;
+  color: var(--ink);
+}
+
+.h-card-count-number {
+  font-weight: var(--fw-extrabold);
+  font-size: 44px;
+  line-height: var(--lh-tight);
+  font-variant-numeric: tabular-nums;
+}
+
+.h-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.h-chip {
+  padding: 6px 14px;
+  border-radius: var(--radius-pill);
+  background: var(--blue-wash);
+  color: var(--ink);
+  font-weight: var(--fw-bold);
+  font-size: 14px;
+  line-height: 1.2;
+}
+
+.h-chip.is-strong {
+  background: var(--navy);
+  color: var(--white);
+}
+
+.h-chip.is-blue {
+  background: var(--blue);
+  color: var(--white);
+}
+
+.h-link {
+  font-weight: var(--fw-semibold);
+  font-size: 15px;
+  color: var(--text-muted);
+}
+
+.h-link a {
+  font-weight: var(--fw-bold);
+  color: var(--ink);
+  text-underline-offset: 3px;
+}
+
+.h-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.h-actions-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.h-error {
+  font-weight: var(--fw-bold);
+  font-size: 15px;
+  color: var(--ink);
+}
+
+/* Confirmation dialog */
+.h-dialog {
+  width: min(480px, calc(100vw - 32px));
+  padding: var(--space-6);
+  border: 0;
+  background: var(--white);
+  color: var(--text);
+  text-align: right;
+}
+
+.h-dialog::backdrop {
+  background: rgba(0, 0, 44, 0.72);
+}
+
+.h-dialog-title {
+  font-weight: var(--fw-extrabold);
+  font-size: 28px;
+  line-height: 1.05;
+  color: var(--ink);
+}
+
+.h-dialog-body {
+  margin-top: var(--space-3);
+  font-weight: var(--fw-semibold);
+  font-size: 17px;
+  line-height: var(--lh-text);
+}
+
+.h-dialog-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-6);
+}
+
+@media (max-width: 640px) {
+  .h-title {
+    font-size: 28px;
+  }
+
+  .h-subtitle {
+    display: block;
+    margin-top: var(--space-1);
+    font-size: 18px;
+  }
+
+  .h-subtitle::before {
+    content: none;
+  }
+
+  .h-create-row {
+    flex-direction: column;
+  }
+
+  .h-card {
+    padding: var(--space-4);
+  }
+
+  .h-actions,
+  .h-actions-group {
+    width: 100%;
+  }
+
+  .h-actions-group .btn {
+    flex: 1 1 auto;
+  }
+}

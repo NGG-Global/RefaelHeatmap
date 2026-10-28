@@ -94,11 +94,11 @@ and kept each one easy to change.
    `זמן (שעון ישראל)`), which is what the BOM requirement implies. File name uses
    the short code, not the event name.
 9. **Bubble sizing** (all in `src/modules/heatmap/scale.ts`): grid spacing
-   86 px on the 1920×1080 stage, `CAP_RATIO = 0.9` (max diameter 77 px),
+   84 px on the 1920×1080 stage, `CAP_RATIO = 0.9` (max diameter 75.6 px),
    `COUNT_FLOOR = 5`, `MIN_DIAMETER = 46` px (fits a two-digit count at 30 px
-   ExtraBold). Consequence: at the floor scale, counts 1 and 2 both draw near
-   the minimum (46 and 49 px); the printed number tells them apart. Tune after
-   the dry run.
+   ExtraBold). Consequence: at the floor scale, counts 1 and 2 both draw at
+   the minimum (46 and 47.8 px); the printed number tells them apart. Tune
+   after the dry run.
 10. **Quadrant names** sit in a band above and below the grid, inside each
     quadrant's columns, so they can never collide with a bubble.
 11. **Participant extras** needed for weak reception: automatic retry (votes are

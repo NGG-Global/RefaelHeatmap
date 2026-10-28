@@ -115,6 +115,15 @@ button:disabled {
   background: var(--ink);
 }
 
+.btn-light {
+  background: var(--white);
+  color: var(--ink);
+}
+
+.btn-light:hover:not(:disabled) {
+  background: var(--blue-wash);
+}
+
 .btn:disabled {
   opacity: 1;
 }

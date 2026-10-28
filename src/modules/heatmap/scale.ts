@@ -6,7 +6,7 @@
 export const GRID_POINTS = 10;
 
 /** Distance between adjacent score points. */
-export const SPACING = 86;
+export const SPACING = 84;
 
 /** Largest bubble diameter as a share of SPACING; < 1 so neighbours never touch. */
 export const CAP_RATIO = 0.9;

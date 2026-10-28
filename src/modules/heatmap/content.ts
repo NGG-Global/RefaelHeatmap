@@ -94,6 +94,7 @@ export const DISPLAY_UI = {
   hideMean: "הסתרת ממוצע",
   votingClosedBadge: "ההצבעה סגורה",
   qrAlt: "קוד QR להצבעה",
+  hostControls: "שליטת מנחה",
 } as const;
 
 export const HOST_UI = {

@@ -1,4 +1,4 @@
-import { Dot, Trail } from "./Motif";
+import { Comet } from "./Motif";
 import "./simple-page.css";
 
 interface Props {
@@ -11,8 +11,8 @@ export function SimplePage({ title, body }: Props) {
   return (
     <main className="simple-page">
       <div className="simple-page-motif" dir="ltr" aria-hidden="true">
-        <Trail x={-150} y={40} rot={36.7} />
-        <Dot x={88} y={168} />
+        {/* trail at the template rotation 36.7°, running off the left edge */}
+        <Comet x={64} y={176} angle={-143.3} />
       </div>
       <div className="simple-page-copy">
         <h1 className="simple-page-title">{title}</h1>
