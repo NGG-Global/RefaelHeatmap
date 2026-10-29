@@ -122,11 +122,15 @@ and kept each one easy to change.
     in `content.ts` under "UI microcopy" for review.
 12. **QR target.** `VITE_PUBLIC_BASE_URL` (optional) fixes the domain printed in
     the QR and short link; otherwise the current origin is used.
-13. **Ten score buttons, as the brief says** (owner's decision, 29 Oct: "follow
-    the brief"). A drag gauge was used from 28 Oct and is withdrawn. Each anchor
-    band row on the phone holds its two buttons (1–2, 3–4, …), so the five
-    bands are always visible and the chosen score's band is highlighted; nothing
-    is preselected.
+13. **Slider instead of ten buttons** (owner's decision, 29 Oct, overriding the
+    brief's "buttons, not a slider"; briefly buttons earlier that day). Above
+    each slider, the anchor title for the chosen score, which changes as the
+    handle moves. The handle idles on 5 with animated arrows, but a score counts
+    only after a tap or drag (tapping the idle handle records 5), so nobody is
+    counted for a default. While dragging, the handle stays under the finger and
+    the score and title update at each step; on release it settles on the
+    number. Touch input tells taps, sideways drags and page scrolls apart, so
+    scrolling never changes an answer.
 14. **No client logo** (owner's decision, 29 Oct: "follow the brief"; V5: no
     client logo or name in the tool). The co-brand footer added on 28 Oct is
     removed; the projector shows the NGG mark only.
