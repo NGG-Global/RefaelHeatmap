@@ -26,8 +26,7 @@ body.cursor-hidden * {
   pointer-events: none;
 }
 
-/* Design-system footer lockup: NGG mark at x 26, then the co-brand wordmark
-   from x 96, both 72 px tall at y 995. Runs left to right. */
+/* Design-system footer: the NGG mark at x 26, 72 px tall at y 995. */
 .stage-footer {
   position: absolute;
   left: 26px;
@@ -35,18 +34,12 @@ body.cursor-hidden * {
   height: 72px;
   display: flex;
   align-items: center;
-  gap: 15px;
 }
 
 .stage-footer-ngg {
   width: 55px;
   height: 72px;
   object-fit: contain;
-}
-
-.stage-footer-cobrand {
-  height: 60px;
-  width: auto;
 }
 
 .stage-badge {

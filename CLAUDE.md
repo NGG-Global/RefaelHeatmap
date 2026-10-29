@@ -10,9 +10,8 @@ this repo follows the rules below.
   file names, hosting project names or URLs. Use `ngg-platform` as the package
   name, app title and any internal identifier. The repository name is outside our
   control; never repeat it.
-- Exception (owner's decision, 28 Oct 2026): the projector footer shows the
-  client's wordmark beside the NGG mark. The artwork and its alt text live only
-  in `src/brand/`; the name stays out of all other code, commits, docs and URLs.
+- No client logo or wordmark either (brief V5): the projector footer shows the
+  NGG mark only.
 - The participant-facing URL must not contain the client's name. The hosting
   project is named `ngg-platform` explicitly (never derived from the repo name).
 

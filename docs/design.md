@@ -19,16 +19,15 @@ colours (the system allows no transparency on content).
 | Type | Assistant only, weights 400/600/700/800, self-hosted woff2 (Hebrew + Latin subsets), preloaded. Display type on 90 % leading. |
 | Geometry | Radii are 0, 50 % or a stadium. Nothing is lightly rounded. No borders, no shadows, no blur. |
 | Motif | Trail + dot at the template's exact sizes and rotations, only on navy grounds, clipped by the edge on small screens rather than scaled. |
-| Projector | The display is laid out on the system's own 1920 × 1080 canvas and scaled to the window. Footer lockup: NGG mark at x 26, y 995, 72 px tall, then the client wordmark (white on navy, colour on white), set in `src/brand/`. |
+| Projector | The display is laid out on the system's own 1920 × 1080 canvas and scaled to the window. Footer: NGG mark at x 26, y 995, 72 px tall. No client logo (brief V5). |
 
 ## Extensions for interactive screens
 
 | Need | Rule | Derived from |
 |---|---|---|
-| Gauge track | Five stadium segments (one per anchor band) in `--blue-wash`; the active band's segment in solid `--blue` | Stadium geometry; the system's empty image well (12 % blue wash), made solid |
-| Gauge handle | 48 px navy dot with the white score (20:1). Before the first touch it idles on 5 with no number, between two navy arrow triangles that nudge outward; 5 is not recorded until touched | The motif dot |
+| Score buttons | Ten 52 px circles, two in each band row: white with an ink number; the chosen one solid in the other programme colour (blue in the navy X question, navy in the blue Y question) with a white number | Circle geometry; programme colours |
 | Question header | As on the slide: a bar "ציר X \| <axis name>", white ExtraBold on navy (X) or blue (Y), square corners | The slide "שתי שאלות למפת החום" |
-| Anchor bands | As on the slide: five rows on `--card`, a stadium range pill in the axis colour. The chosen score's row turns solid in the axis colour with white ExtraBold text and a white pill | The slide; card ground (brief) |
+| Anchor bands | As on the slide: five rows on `--card`, the row's two score buttons where the slide has its range pill. The chosen score's row turns solid in the axis colour with white text (same weight, so it never re-wraps) | The slide; card ground (brief) |
 | Idle control | `--blue-wash #E0E9FC` fill, ink label | The system's empty image well (12 % blue wash), made solid |
 | Primary action | Blue stadium button, ExtraBold label | Stadium geometry |
 | Disabled action | Wash fill, `--text-muted` label | Wash |
@@ -53,12 +52,10 @@ quadrant-name backgrounds let it show through), because brief V5 requires it.
 ## Screens
 
 - **Participant (phone).** Navy hero with the opening line; two questions laid
-  out as on the slide (header bar, five anchor bands, chosen band highlighted),
-  then a 1–10 gauge under the bands (tap or drag; runs 1 → 10 left to right like
-  the projector's X axis; idle handle on 5 with arrows until the first touch,
-  which is what records a score). Sticky submit bar on `--card`. Closed /
-  not-found states are full navy message pages. Nothing above the gauge changes
-  height while dragging.
+  out as on the slide (header bar, then the five anchor bands), each band row
+  with its two of the ten score buttons (brief: buttons, not a slider); the
+  chosen score's band is highlighted and nothing is preselected. Sticky submit
+  bar on `--card`. Closed / not-found states are full navy message pages.
 - **Display (projector).** Lobby on navy: QR (760 px, quiet zone included),
   short link under it, event name (88 px) and live counter (133 px) on the right.
   Results on white: heatmap centred-left (`dir="ltr"`, 840 px square, scale
@@ -74,7 +71,6 @@ quadrant-name backgrounds let it show through), because brief V5 requires it.
 
 ## Motion
 
-Only what the brief requires plus one cue: the map fades in on reveal (900 ms);
-each new vote fades in, the colour over 700 ms and the dot over 600 ms; the
-gauge's idle arrows nudge until the first touch. All of it is off with reduced
-motion. (The backup matrix keeps its 250 ms bubble resize.)
+Only what the brief requires: the map fades in on reveal (900 ms); each new
+vote fades in, the colour over 700 ms and the dot over 600 ms. Both are off with
+reduced motion. (The backup matrix keeps its 250 ms bubble resize.)
