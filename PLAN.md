@@ -122,14 +122,14 @@ and kept each one easy to change.
     in `content.ts` under "UI microcopy" for review.
 12. **QR target.** `VITE_PUBLIC_BASE_URL` (optional) fixes the domain printed in
     the QR and short link; otherwise the current origin is used.
-13. **Gauge instead of ten buttons** (owner's decision, 28 Oct, replacing the
-    brief's "no slider"). The handle idles on 5 with animated arrows as a cue
-    (owner's request), but to avoid the default-position bias a slider brings,
-    a score counts only after a tap or drag (tapping the idle handle records 5); touch input
-    tells taps, sideways drags and page scrolls apart, so scrolling never changes
-    an answer.
-14. **Co-brand footer** (owner's decision, 28 Oct): the client wordmark beside the
-    NGG mark on the projector. Kept in `src/brand/` only.
+13. **Ten score buttons, as the brief says** (owner's decision, 29 Oct: "follow
+    the brief"). A drag gauge was used from 28 Oct and is withdrawn. Each anchor
+    band row on the phone holds its two buttons (1–2, 3–4, …), so the five
+    bands are always visible and the chosen score's band is highlighted; nothing
+    is preselected.
+14. **No client logo** (owner's decision, 29 Oct: "follow the brief"; V5: no
+    client logo or name in the tool). The co-brand footer added on 28 Oct is
+    removed; the projector shows the NGG mark only.
 
 ## Open questions for Dor
 

@@ -45,7 +45,7 @@ export function Lobby({ name, shortCode, voters, votingOpen }: Props) {
         </div>
         {!votingOpen ? <p className="stage-badge lobby-badge">{DISPLAY_UI.votingClosedBadge}</p> : null}
 
-        <StageFooter ground="dark" />
+        <StageFooter />
       </div>
     </Stage>
   );

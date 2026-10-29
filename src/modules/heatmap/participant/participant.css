@@ -101,184 +101,109 @@
   color: var(--text-muted);
 }
 
-/* The five anchor bands, as on the slide: range pill + text on the card
-   ground. The chosen score's band turns solid in the axis colour. */
+/* The five anchor bands, as on the slide, on the card ground. Each row holds
+   its two of the ten score buttons (brief: large buttons, not a slider). The
+   chosen score's row turns solid in the axis colour; the text keeps its
+   weight, so choosing never re-wraps a row. */
+.q.is-x {
+  --pick: var(--blue);
+}
+
+.q.is-y {
+  --pick: var(--navy);
+}
+
 .q-bands {
   display: grid;
   gap: 6px;
-  margin: 6px 0 0;
-  padding: 0;
-  list-style: none;
+  margin-top: 6px;
 }
 
 .q-band {
   display: flex;
   align-items: center;
   gap: var(--space-3);
-  min-height: 48px;
-  padding: var(--space-2) var(--space-3);
+  min-height: 68px;
+  padding: var(--space-2);
+  padding-inline-end: var(--space-4);
   background: var(--card);
-  color: var(--text);
-  font-weight: var(--fw-semibold);
-  font-size: 16px;
-  line-height: 1.2;
-}
-
-.q-band-range {
-  flex: none;
-  min-width: 52px;
-  padding: 5px 10px;
-  border-radius: var(--radius-pill);
-  background: var(--axis);
-  color: var(--white);
-  font-weight: var(--fw-extrabold);
-  font-size: 15px;
-  line-height: 1;
-  text-align: center;
-  direction: ltr;
-  unicode-bidi: isolate;
-  font-variant-numeric: tabular-nums;
 }
 
 .q-band.is-active {
   background: var(--axis);
-  color: var(--white);
-  font-weight: var(--fw-extrabold);
 }
 
-.q-band.is-active .q-band-range {
-  background: var(--white);
-  color: var(--axis);
+.q-band-scores {
+  display: flex;
+  flex: none;
+  gap: var(--space-2);
 }
 
-/* Until the first touch: how to use the gauge. Keeps its height afterwards,
-   so nothing below moves. */
-.q-hint {
-  min-height: 1.25em;
-  margin-top: var(--space-4);
-  font-weight: var(--fw-semibold);
-  font-size: 15px;
-  line-height: var(--lh-text);
-  color: var(--text-muted);
-}
-
-.q-hint.is-done {
-  visibility: hidden;
-}
-
-/* Gauge: 5 band segments, numbers 1–10 under them, navy handle with the score. */
-.slider {
-  margin-top: var(--space-3);
-}
-
-.slider-hit {
+.score {
   position: relative;
-  height: 88px;
-  border-radius: var(--radius-pill);
+  flex: none;
+  width: 52px;
+  height: 52px;
+}
+
+.score-input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
   cursor: pointer;
-  touch-action: pan-y;
-  user-select: none;
-  -webkit-user-select: none;
-  -webkit-touch-callout: none;
 }
 
-.slider-hit:focus-visible {
-  outline: 3px solid var(--blue);
-  outline-offset: 4px;
-}
-
-.slider-rail {
-  position: absolute;
-  inset: 18px 0 auto 0;
-  height: 16px;
-}
-
-.slider-seg {
-  position: absolute;
-  top: 0;
-  height: 16px;
-  border-radius: var(--radius-pill);
-  background: var(--blue-wash);
-}
-
-.slider-seg.is-active {
-  background: var(--blue);
-}
-
-.slider-num {
-  position: absolute;
-  top: 58px;
-  transform: translateX(-50%);
-  font-weight: var(--fw-bold);
-  font-size: 16px;
+.score-face {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  border-radius: var(--radius-round);
+  background: var(--white);
+  color: var(--ink);
+  font-weight: var(--fw-extrabold);
+  font-size: 22px;
   line-height: 1;
-  color: var(--text-muted);
   font-variant-numeric: tabular-nums;
   pointer-events: none;
 }
 
-.slider-num.is-active {
-  font-weight: var(--fw-extrabold);
-  color: var(--ink);
-}
-
-.slider-thumb {
-  position: absolute;
-  top: 2px;
-  width: 48px;
-  height: 48px;
-  margin-left: -24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: var(--radius-round);
-  background: var(--navy);
+/* The chosen score: solid in the other programme colour, so it stands out on
+   both the card row and the highlighted (axis-colour) row. */
+.score-input:checked + .score-face {
+  background: var(--pick);
   color: var(--white);
-  font-weight: var(--fw-extrabold);
-  font-size: 22px;
-  line-height: 1;
-  pointer-events: none;
 }
 
-/* Before the first touch: arrows beside the idle handle say "drag me".
-   Functional motion, stops at the first touch, static with reduced motion. */
-.slider-hint {
-  position: absolute;
-  top: 19px;
-  width: 10px;
-  height: 14px;
-  fill: var(--navy);
-  pointer-events: none;
+.score-input:focus-visible + .score-face {
+  outline: 3px solid var(--blue);
+  outline-offset: 3px;
 }
 
-.slider-hint svg {
-  display: block;
+.q-band.is-active .score-input:focus-visible + .score-face {
+  outline-color: var(--white);
 }
 
-.slider-hint-left {
-  margin-left: -42px;
-  animation: slider-nudge-left 1.2s ease-in-out infinite alternate;
+.q-band-text {
+  flex: 1;
+  min-width: 0;
+  font-weight: var(--fw-semibold);
+  font-size: 16px;
+  line-height: var(--lh-text);
+  color: var(--text);
 }
 
-.slider-hint-right {
-  margin-left: 32px;
-  animation: slider-nudge-right 1.2s ease-in-out infinite alternate;
+.q-band.is-active .q-band-text {
+  color: var(--white);
 }
 
-@keyframes slider-nudge-left {
-  from { transform: translateX(0); }
-  to { transform: translateX(-6px); }
-}
-
-@keyframes slider-nudge-right {
-  from { transform: translateX(0); }
-  to { transform: translateX(6px); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .slider-hint-left,
-  .slider-hint-right {
-    animation: none;
+@media (hover: hover) {
+  .score-input:not(:checked):hover + .score-face {
+    background: var(--blue-wash);
   }
 }
 

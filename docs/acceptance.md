@@ -67,13 +67,12 @@ One iPhone (Safari) and one Android phone (Chrome).
 - [ ] Opening line and both questions match the slide "שתי שאלות למפת החום"
       (brief V5, "תוכן מחייב"); Hebrew is right-aligned.
 - [ ] Each question looks like the slide: header bar "ציר X | …" (navy) or
-      "ציר Y | …" (blue), then the five anchor bands.
-- [ ] Both gauges start with the handle on 5 (no number) and animated arrows.
-      Tapping a number, tapping the handle (records 5) or dragging sets the
-      score, hides the arrows and highlights that score's band above the gauge;
-      "שליחה" stays disabled until both questions are set.
-- [ ] Scrolling the page with a finger that starts on a gauge does not change
-      the answer.
+      "ציר Y | …" (blue), then the five anchor bands, each with its two score
+      buttons; ten large buttons per question, no slider, nothing preselected.
+- [ ] Tapping a score marks it and highlights its band; tapping another score
+      moves the mark. "שליחה" stays disabled until both questions are set.
+- [ ] Scrolling the page with a finger that starts on a button does not choose
+      a score.
 - [ ] Submit shows "תודה, ההצבעה נקלטה"; the projector counter goes up.
 - [ ] Change one answer → "עדכון ההצבעה" → submit again; the counter does not
       go up, the dot moves after the reveal.

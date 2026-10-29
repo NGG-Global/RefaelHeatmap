@@ -1,14 +1,10 @@
-/** Design-system footer lockup on the projector: NGG mark, then the co-brand wordmark. */
-import { COBRAND } from "../../../brand/cobrand";
+/** Design-system footer on the projector: the NGG mark only (brief V5: no client logo or name). */
 import nggMark from "../../../platform/ngg-mark.png";
 
-export function StageFooter({ ground }: { ground: "dark" | "light" }) {
+export function StageFooter() {
   return (
     <div className="stage-footer" dir="ltr">
       <img className="stage-footer-ngg" src={nggMark} alt="NGG" />
-      {COBRAND ? (
-        <img className="stage-footer-cobrand" src={ground === "dark" ? COBRAND.onDark : COBRAND.onLight} alt={COBRAND.alt} />
-      ) : null}
     </div>
   );
 }

@@ -39,7 +39,7 @@ export function Results({ name, voters, votingOpen, cells, mean, showDots, view 
         </div>
         {!votingOpen ? <p className="stage-badge results-badge">{DISPLAY_UI.votingClosedBadge}</p> : null}
 
-        <StageFooter ground="light" />
+        <StageFooter />
       </div>
     </Stage>
   );
