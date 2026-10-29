@@ -25,9 +25,10 @@ colours (the system allows no transparency on content).
 
 | Need | Rule | Derived from |
 |---|---|---|
-| Score buttons | Ten 52 px circles, two in each band row: white with an ink number; the chosen one solid in the other programme colour (blue in the navy X question, navy in the blue Y question) with a white number | Circle geometry; programme colours |
+| Slider track | Five stadium segments (one per anchor band) in `--blue-wash`; the chosen score's segment in the question's colour (navy for X, blue for Y); numbers 1–10 under it, the chosen one in ink ExtraBold | Stadium geometry; the system's empty image well (12 % blue wash), made solid |
+| Slider handle | 48 px circle in the question's colour with the white score. Before the first touch it idles on 5 with no number, between two arrow triangles that nudge outward; 5 is not recorded until touched. Grows to 112 % while held | The motif dot |
 | Question header | As on the slide: a bar "ציר X \| <axis name>", white ExtraBold on navy (X) or blue (Y), square corners | The slide "שתי שאלות למפת החום" |
-| Anchor bands | As on the slide: five rows on `--card`, the row's two score buttons where the slide has its range pill. The chosen score's row turns solid in the axis colour with white text (same weight, so it never re-wraps) | The slide; card ground (brief) |
+| Anchor title | `--card` panel above the slider: the score in a 48 px circle (question colour; empty wash circle before the first touch) and the chosen score's anchor title in ink ExtraBold. The panel is as tall as the question's longest title, so nothing moves while dragging | The slide's band rows; card ground (brief) |
 | Idle control | `--blue-wash #E0E9FC` fill, ink label | The system's empty image well (12 % blue wash), made solid |
 | Primary action | Blue stadium button, ExtraBold label | Stadium geometry |
 | Disabled action | Wash fill, `--text-muted` label | Wash |
@@ -51,11 +52,12 @@ quadrant-name backgrounds let it show through), because brief V5 requires it.
 
 ## Screens
 
-- **Participant (phone).** Navy hero with the opening line; two questions laid
-  out as on the slide (header bar, then the five anchor bands), each band row
-  with its two of the ten score buttons (brief: buttons, not a slider); the
-  chosen score's band is highlighted and nothing is preselected. Sticky submit
-  bar on `--card`. Closed / not-found states are full navy message pages.
+- **Participant (phone).** Navy hero with the opening line; two questions, each
+  with the slide's header bar, the anchor title for the chosen score and a 1–10
+  slider under it (tap or drag; runs 1 → 10 left to right like the projector's
+  X axis; idle handle on 5 with arrows until the first touch, which is what
+  records a score). Sticky submit bar on `--card`. Closed / not-found states
+  are full navy message pages.
 - **Display (projector).** Lobby on navy: QR (760 px, quiet zone included),
   short link under it, event name (88 px) and live counter (133 px) on the right.
   Results on white: heatmap centred-left (`dir="ltr"`, 840 px square, scale
@@ -71,6 +73,9 @@ quadrant-name backgrounds let it show through), because brief V5 requires it.
 
 ## Motion
 
-Only what the brief requires: the map fades in on reveal (900 ms); each new
-vote fades in, the colour over 700 ms and the dot over 600 ms. Both are off with
-reduced motion. (The backup matrix keeps its 250 ms bubble resize.)
+Functional only. Projector: the map fades in on reveal (900 ms); each new vote
+fades in, the colour over 700 ms and the dot over 600 ms (brief). Phone slider:
+the handle glides to a tapped number and settles on release (180 ms), follows
+the finger with no delay while held, and grows slightly; the anchor title
+cross-fades (160 ms); the idle arrows nudge until the first touch. All of it is
+off with reduced motion. (The backup matrix keeps its 250 ms bubble resize.)
